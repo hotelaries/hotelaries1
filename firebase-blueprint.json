@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "entities": {
+    "SiteConfig": {
+      "title": "SiteConfig",
+      "description": "Global CMS content configuration for LINGERS Suites & Residence",
+      "type": "object",
+      "properties": {
+        "hero": { "type": "object" },
+        "suites": { "type": "array" },
+        "experiences": { "type": "array" },
+        "wellness": { "type": "array" },
+        "culinary": { "type": "array" },
+        "gallery": { "type": "array" },
+        "testimonials": { "type": "array" },
+        "contact": { "type": "object" },
+        "pages": { "type": "object" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      }
+    },
+    "BookingInquiry": {
+      "title": "BookingInquiry",
+      "description": "Guest reservation request or booking inquiry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "guestName": { "type": "string" },
+        "guestEmail": { "type": "string" },
+        "guestPhone": { "type": "string" },
+        "arrivalDate": { "type": "string" },
+        "departureDate": { "type": "string" },
+        "adults": { "type": "number" },
+        "children": { "type": "number" },
+        "suiteId": { "type": "string" },
+        "suiteName": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "archived", "cancelled"] },
+        "type": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["guestName", "guestEmail", "arrivalDate", "departureDate", "status"]
+    },
+    "MediaItem": {
+      "title": "MediaItem",
+      "description": "Media library asset with metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string" },
+        "title": { "type": "string" },
+        "alt": { "type": "string" },
+        "caption": { "type": "string" },
+        "category": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "size": { "type": "number" }
+      },
+      "required": ["id", "url"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Audit trail log of CMS modifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "details": { "type": "string" },
+        "user": { "type": "string" },
+        "timestamp": { "type": "string" }
+      }
+    },
+    "ContactSettings": {
+      "title": "ContactSettings",
+      "description": "Location, contact details and Google Maps configuration",
+      "type": "object",
+      "properties": {
+        "hotelName": { "type": "string" },
+        "address": { "type": "string" },
+        "phone1": { "type": "string" },
+        "phone2": { "type": "string" },
+        "email": { "type": "string" },
+        "mapEmbedHtml": { "type": "string" },
+        "directionsUrl": { "type": "string" },
+        "mapTitle": { "type": "string" },
+        "showMap": { "type": "boolean" },
+        "mapHeight": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/site_content/{contentId}": {
+      "schema": "SiteConfig",
+      "description": "Live CMS configuration documents (e.g. main)"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": "ContactSettings",
+      "description": "Site-level settings such as contact and location map"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "BookingInquiry",
+      "description": "Guest inquiries and bookings"
+    },
+    "/media/{mediaId}": {
+      "schema": "MediaItem",
+      "description": "Central media library images and assets"
+    },
+    "/activity_logs/{logId}": {
+      "schema": "ActivityLog",
+      "description": "CMS administrative action audit log"
+    }
+  }
+}

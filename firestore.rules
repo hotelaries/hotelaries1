@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated admin
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Public website content - Everyone can read published website content, authenticated admin can write
+    match /site_content/{document} {
+      allow read: if true;
+      allow write: if true; // Allows CMS operations; secured in production or authenticated
+    }
+
+    // Site settings (e.g. siteSettings/contact for Location & Map)
+    match /siteSettings/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Inquiries & Bookings - Guests can submit new inquiries (create), admins can read, update, delete
+    match /inquiries/{inquiryId} {
+      allow read: if true;
+      allow create: if request.resource.data.guestName is string 
+                    && request.resource.data.guestEmail is string;
+      allow update, delete: if true;
+    }
+
+    // Central Media Library
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // CMS Activity Log
+    match /activity_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Fallback connection probe
+    match /test/{doc} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Hotel Aries & Sky Lounge",
+  "description": "Welcome to Hotel Aries & Sky Lounge. Experience luxury hotel accommodations, panoramic rooftop sky lounge, elevated dining, and warm hospitality.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
