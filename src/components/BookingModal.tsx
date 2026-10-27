@@ -221,7 +221,7 @@ export const BookingModal: React.FC = () => {
                     >
                       {siteData.suites.map((s) => (
                         <option key={s.id} value={s.id}>
-                          {t(s.name)} ({s.size} · ab €{s.priceFrom})
+                          {t(s.name)} {s.roomCount ? `(${s.roomCount} Rooms Available)` : ''} — {s.size} · from €{s.priceFrom}
                         </option>
                       ))}
                     </select>

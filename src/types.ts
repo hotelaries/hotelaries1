@@ -35,7 +35,7 @@ export interface HeroConfig {
 export interface Suite {
   id: string;
   name: MultiLangText;
-  category: 'suite' | 'apartment' | 'penthouse';
+  category: 'suite' | 'apartment' | 'penthouse' | 'Deluxe' | 'Supreme' | string;
   type?: 'suite' | 'apartment';
   size: string;
   maxGuests: number;
@@ -48,6 +48,7 @@ export interface Suite {
   availability?: 'available' | 'unavailable' | 'maintenance';
   status?: 'published' | 'draft' | 'archived';
   displayOrder?: number;
+  roomCount?: number;
   image: string;
   gallery: string[];
   shortDesc: MultiLangText;
@@ -113,6 +114,38 @@ export interface GalleryImage {
   featured?: boolean;
 }
 
+export interface RoomOverviewConfig {
+  totalRooms: number;
+  deluxeRoomsCount: number;
+  supremeRoomsCount: number;
+  heading?: MultiLangText;
+  subtitle?: MultiLangText;
+  description?: MultiLangText;
+}
+
+export interface RestaurantConfig {
+  title: MultiLangText;
+  subtitle?: MultiLangText;
+  description: MultiLangText;
+  mainImage: string;
+  gallery: string[];
+  highlights?: MultiLangText[];
+  ctaText?: MultiLangText;
+  ctaUrl?: string;
+  status: 'published' | 'draft';
+  visible?: boolean;
+  openingHours?: MultiLangText;
+  cuisine?: MultiLangText;
+  tagline?: MultiLangText;
+  features?: MultiLangText[];
+  reservationCtaText?: MultiLangText;
+  menuHighlights?: Array<{
+    title: MultiLangText;
+    desc: MultiLangText;
+    price?: string;
+  }>;
+}
+
 export interface SkyLoungeConfig {
   title: MultiLangText;
   subtitle: MultiLangText;
@@ -122,7 +155,10 @@ export interface SkyLoungeConfig {
   openingHours?: MultiLangText;
   menuLink?: string;
   reservationCtaText?: MultiLangText;
+  ctaText?: MultiLangText;
+  ctaUrl?: string;
   status: 'published' | 'draft';
+  visible?: boolean;
   features?: MultiLangText[];
   nightAmbienceImage?: string;
   seatingCapacity?: string;
@@ -190,6 +226,13 @@ export interface ContactInfo {
   footerDescription?: string;
   copyrightText?: string;
   logo?: string;
+  logoLight?: string;
+  logoDark?: string;
+  logoHeight?: number;
+  logoDisplayMode?: 'logo_and_text' | 'logo_only' | 'text_only';
+  logoShape?: 'natural' | 'rounded' | 'circle';
+  showLogoInFooter?: boolean;
+  showLogoInDrawer?: boolean;
   favicon?: string;
   heroDefaultImage?: string;
   primaryAccentColor?: string;
@@ -253,8 +296,10 @@ export interface PageContent {
 export interface SiteData {
   brandVersion?: number;
   hero: HeroConfig;
+  roomOverview?: RoomOverviewConfig;
   suites: Suite[];
   skyLounge: SkyLoungeConfig;
+  restaurant?: RestaurantConfig;
   experiences: Experience[];
   wellness: WellnessFeature[];
   culinary: CulinaryItem[];

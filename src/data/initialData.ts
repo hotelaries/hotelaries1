@@ -1,15 +1,15 @@
 import { SiteData } from '../types';
 
 export const initialSiteData: SiteData = {
-  brandVersion: 2,
+  brandVersion: 6,
   hero: {
     autoSlide: true,
     slideIntervalSeconds: 6,
     showOverlay: true,
     mainTagline: {
-      de: "HOTEL ARIES & SKY LOUNGE",
-      en: "HOTEL ARIES & SKY LOUNGE",
-      it: "HOTEL ARIES & SKY LOUNGE"
+      de: "ARIES & HOTEL SKY LOUNGE",
+      en: "ARIES & HOTEL SKY LOUNGE",
+      it: "ARIES & HOTEL SKY LOUNGE"
     },
     heroSubtitle: {
       de: "Ihr Aufenthalt über dem Gewöhnlichen – Luxus, Panoramablick & herzliche Gastfreundschaft",
@@ -31,9 +31,9 @@ export const initialSiteData: SiteData = {
         id: "hero-1",
         image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=2000&q=85",
         title: {
-          de: "HOTEL ARIES & SKY LOUNGE",
-          en: "HOTEL ARIES & SKY LOUNGE",
-          it: "HOTEL ARIES & SKY LOUNGE"
+          de: "ARIES & HOTEL SKY LOUNGE",
+          en: "ARIES & HOTEL SKY LOUNGE",
+          it: "ARIES & HOTEL SKY LOUNGE"
         },
         subtitle: {
           de: "Ihr Aufenthalt über dem Gewöhnlichen",
@@ -199,16 +199,37 @@ export const initialSiteData: SiteData = {
       }
     ]
   },
+  roomOverview: {
+    totalRooms: 26,
+    deluxeRoomsCount: 24,
+    supremeRoomsCount: 2,
+    heading: {
+      de: "26 Exklusive Zimmer",
+      en: "26 Rooms & Suites",
+      it: "26 Camere & Suite"
+    },
+    subtitle: {
+      de: "24 Deluxe Zimmer · 2 Supreme Zimmer",
+      en: "24 Deluxe Rooms · 2 Supreme Rooms",
+      it: "24 Camere Deluxe · 2 Camere Supreme"
+    },
+    description: {
+      de: "Unser Boutique-Hotel bietet insgesamt 26 durchdacht gestaltete Unterkünfte: 24 Deluxe Zimmer und 2 Supreme Zimmer für gehobenen Komfort.",
+      en: "Our boutique hotel features 26 thoughtfully appointed accommodations: 24 Deluxe Rooms and 2 Supreme Rooms crafted for elevated comfort.",
+      it: "Il nostro boutique hotel dispone di 26 alloggi arredati con cura: 24 Camere Deluxe e 2 Camere Supreme studiate per il massimo comfort."
+    }
+  },
   suites: [
     {
-      id: "room-executive-king",
+      id: "room-deluxe",
       name: {
-        de: "Executive King Zimmer",
-        en: "Executive King Room",
-        it: "Camera Executive King"
+        de: "Deluxe Zimmer",
+        en: "Deluxe Room",
+        it: "Camera Deluxe"
       },
-      category: "suite",
+      category: "Deluxe",
       type: "suite",
+      roomCount: 24,
       size: "38 m²",
       maxGuests: 2,
       bedrooms: 1,
@@ -220,17 +241,17 @@ export const initialSiteData: SiteData = {
         "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80"
       ],
       shortDesc: {
-        de: "Modernes Zimmer mit King-Size-Bett, edlem Design und elegantem Badezimmer.",
-        en: "Contemporary hotel room featuring plush King-size bedding, ergonomic workspace, and designer en-suite.",
-        it: "Camera contemporanea con letto king size, zona lavoro ergonomica e bagno di design."
+        de: "24 Deluxe Zimmer mit modernem Komfort, edlem Ambiente und durchdachtem Interieur.",
+        en: "24 Deluxe Rooms offering contemporary luxury, plush bedding, and dedicated hospitality.",
+        it: "24 Camere Deluxe con arredi moderni, massimo comfort e atmosfera rilassante."
       },
       fullDesc: {
-        de: "Das Executive King Zimmer bietet höchsten Komfort für anspruchsvolle Reisende: Hochwertige Bettwaren, schallisolierte Fenster, modernes Unterhaltungssystem und stilvolle Möbel für ein vollendetes Wohlfühlerlebnis.",
-        en: "The Executive King Room delivers refined comfort for discerning guests: premium bedding, sound-insulated windows, a modern entertainment system, and custom-styled furnishings for an effortlessly restful stay.",
-        it: "La Camera Executive King offre comfort di alto livello con finiture moderne, isolamento acustico, TV smart e bagno privato con doccia a pioggia."
+        de: "Unsere 24 Deluxe Zimmer verbinden elegantes Design mit höchstem Schlafkomfort. Schallisolierte Fenster, ein modernes Bad mit Regendusche und ausgewählte Annehmlichkeiten schaffen den perfekten Rückzugsort.",
+        en: "Our 24 Deluxe Rooms blend understated sophistication with serene restful comfort. Featuring sound-insulated interiors, a spa-inspired rain shower, and attentive hotel services for a seamless stay.",
+        it: "Le nostre 24 Camere Deluxe uniscono design contemporaneo e riposo impeccabile, con finiture curate, bagno moderno con doccia a pioggia e servizi dedicati."
       },
       amenities: [
-        "King-Size Luxury Bed",
+        "Plush Luxury Bedding",
         "High-Speed Wi-Fi",
         "Smart 4K TV",
         "En-Suite Rain Shower",
@@ -240,37 +261,38 @@ export const initialSiteData: SiteData = {
       ],
       highlights: [
         {
+          de: "24 Zimmer verfügbar",
+          en: "24 Rooms Available",
+          it: "24 Camere Disponibili"
+        },
+        {
           de: "Erstklassiger Schlafkomfort",
           en: "Premium Bedding Comfort",
           it: "Comfort del Letto Superiore"
-        },
-        {
-          de: "Stilvoller Arbeits- & Ruhebereich",
-          en: "Work & Relaxation Zone",
-          it: "Zona Lavoro e Relax"
         }
       ],
       viewType: {
-        de: "Stadt- / Horizontblick",
-        en: "City / Horizon View",
-        it: "Vista Città / Orizzonte"
+        de: "Stadt- & Horizontblick",
+        en: "City & Horizon View",
+        it: "Vista Città & Orizzonte"
       },
       status: "published",
       displayOrder: 1
     },
     {
-      id: "room-deluxe-panorama",
+      id: "room-supreme",
       name: {
-        de: "Deluxe Panorama Suite",
-        en: "Deluxe Panorama Suite",
-        it: "Suite Deluxe Panorama"
+        de: "Supreme Zimmer",
+        en: "Supreme Room",
+        it: "Camera Supreme"
       },
-      category: "suite",
+      category: "Supreme",
       type: "suite",
-      size: "52 m²",
+      roomCount: 2,
+      size: "54 m²",
       maxGuests: 3,
       bedrooms: 1,
-      priceFrom: 310,
+      priceFrom: 340,
       image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80",
       gallery: [
         "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80",
@@ -278,34 +300,34 @@ export const initialSiteData: SiteData = {
         "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80"
       ],
       shortDesc: {
-        de: "Großzügige Suite mit separater Lounge-Ecke, weitem Panoramablick und luxuriöser Ausstattung.",
-        en: "Expansive corner suite featuring a separate lounge sitting area, wide panoramic vistas and elevated appointments.",
-        it: "Ampia suite con zona giorno separata, grandi vetrate panoramiche e finiture di pregio."
+        de: "2 exklusive Supreme Zimmer mit erweiterten Räumlichkeiten, separater Sitzecke und feinsten Details.",
+        en: "2 exclusive Supreme Rooms offering expansive proportions, an inviting sitting area, and refined appointments.",
+        it: "2 esclusive Camere Supreme con ambienti spaziosi, salottino privato e dettagli di alto pregio."
       },
       fullDesc: {
-        de: "Die Deluxe Panorama Suite begeistert durch raumhohe Fenster, einen getrennten Wohn- und Schlafbereich und ein großzügiges Marmorbad mit freistehender Badewanne und Regendusche.",
-        en: "The Deluxe Panorama Suite features floor-to-ceiling windows, distinct living and sleeping quarters, and an expansive bathroom with deep soaking tub and rainfall shower.",
-        it: "La Suite Deluxe Panorama vanta vetrate a tutta altezza, zona giorno e notte separate e un sontuoso bagno con vasca idromassaggio."
+        de: "Unsere 2 Supreme Zimmer repräsentieren die Spitzenkategorie unseres Hauses. Großzügig geschnittene Räume, exklusive Möbel und besondere Ausstattungsdetails bieten ein herausragendes Übernachtungserlebnis.",
+        en: "Our 2 Supreme Rooms represent the signature tier of Hotel Aries & Sky Lounge. Expansive layouts, curated designer accents, and privileged amenities deliver an extraordinary hospitality experience.",
+        it: "Le nostre 2 Camere Supreme rappresentano l'eccellenza della nostra ospitalità, con ampi spazi dedicati al relax e finiture prestigiose."
       },
       amenities: [
         "King-Size Boxspring Bed",
-        "Separate Living Lounge",
-        "Freestanding Soaking Tub",
-        "Panoramic Floor-to-Ceiling Windows",
-        "Espresso Machine",
-        "Bathrobes & Luxury Toiletries",
+        "Separate Lounge Sitting Area",
+        "Panoramic Windows",
+        "Luxury Rain Shower & Vanity",
+        "Artisan Espresso Machine",
+        "Bathrobes & Premium Toiletries",
         "Priority Sky Lounge Reservation"
       ],
       highlights: [
         {
-          de: "Freistehende Badewanne",
-          en: "Freestanding Soaking Tub",
-          it: "Vasca Indipendente"
+          de: "Nur 2 exklusive Zimmer",
+          en: "Only 2 Exclusive Rooms",
+          it: "Solo 2 Camere Esclusive"
         },
         {
-          de: "Panoramablick",
-          en: "Panoramic Skyline View",
-          it: "Vista Panoramica"
+          de: "Erweiterte Lounge-Ecke",
+          en: "Expanded Lounge Seating",
+          it: "Salottino Privato"
         }
       ],
       viewType: {
@@ -315,139 +337,23 @@ export const initialSiteData: SiteData = {
       },
       status: "published",
       displayOrder: 2
-    },
-    {
-      id: "room-aries-sky-suite",
-      name: {
-        de: "Aries Sky Suite",
-        en: "Aries Sky Suite",
-        it: "Suite Aries Sky"
-      },
-      category: "suite",
-      type: "suite",
-      size: "65 m²",
-      maxGuests: 3,
-      bedrooms: 1,
-      priceFrom: 420,
-      image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
-      gallery: [
-        "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
-      ],
-      shortDesc: {
-        de: "Exklusive Suite auf den oberen Etagen mit direktem Zugang zur Atmosphäre der Sky Lounge.",
-        en: "Signature upper-level suite offering generous private terrace space and seamless proximity to the Sky Lounge.",
-        it: "Suite esclusiva ai piani alti con terrazza privata e accesso diretto all'atmosfera della Sky Lounge."
-      },
-      fullDesc: {
-        de: "Die Aries Sky Suite verkörpert die Identität unseres Hauses: Elegantes Interieur, großzügiger privater Balkonbereich mit Loungemöbeln und erstklassige Service-Vorteile.",
-        en: "The Aries Sky Suite embodies the spirit of our hotel: sophisticated contemporary interior architecture, private balcony with lounge seating, and bespoke guest privileges.",
-        it: "La Suite Aries Sky rappresenta il fiore all'occhiello dell'hotel con ampi spazi esterni privati, arredi di alta manifattura e privilegi esclusivi."
-      },
-      amenities: [
-        "Private Sky Terrace",
-        "Master King Bedroom",
-        "Walk-In Dressing Room",
-        "Double Vanity Marble Bathroom",
-        "Bespoke Minibar & Wine Selection",
-        "High-Speed Premium Wi-Fi",
-        "Dedicated Guest Relations"
-      ],
-      highlights: [
-        {
-          de: "Private Dachterrasse",
-          en: "Private Terrace",
-          it: "Terrazza Privata"
-        },
-        {
-          de: "Exklusiver Sky-Lounge-Zugang",
-          en: "Sky Lounge Access",
-          it: "Accesso Sky Lounge"
-        }
-      ],
-      viewType: {
-        de: "Skyline & Sonnenuntergang",
-        en: "Skyline & Sunset View",
-        it: "Skyline e Tramonto"
-      },
-      status: "published",
-      displayOrder: 3
-    },
-    {
-      id: "room-presidential-penthouse",
-      name: {
-        de: "Presidential Penthouse Suite",
-        en: "Presidential Penthouse Suite",
-        it: "Suite Penthouse Presidenziale"
-      },
-      category: "penthouse",
-      type: "suite",
-      size: "95 m²",
-      maxGuests: 4,
-      bedrooms: 2,
-      priceFrom: 650,
-      image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80",
-      gallery: [
-        "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
-      ],
-      shortDesc: {
-        de: "Die Krönung von Hotel Aries: Zwei Schlafzimmer, privater Dining-Bereich und 360-Grad Panorama.",
-        en: "The pinnacle of Hotel Aries: Two luxury bedrooms, private dining room, and an unrivaled 360-degree horizon.",
-        it: "Il vertice dell'Hotel Aries: due camere da letto, sala da pranzo privata e vista a 360 gradi."
-      },
-      fullDesc: {
-        de: "Das Kronjuwel unseres Hauses bietet unvergleichlichen Raum und Luxus. Ein eleganter Wohn- und Speisebereich, zwei Kingsize-Schlafzimmer mit jeweils eigenem Bad und eine weitläufige Terrasse.",
-        en: "Our flagship accommodation provides peerless residential luxury. Featuring a grand living salon, custom private dining area, two master suites with en-suite bathrooms, and an expansive wraparound terrace.",
-        it: "La suite più prestigiosa dell'hotel offre salone di rappresentanza, sala da pranzo privata, due camere padronali e una grande terrazza panoramica."
-      },
-      amenities: [
-        "Two Master King Bedrooms",
-        "Private Dining & Living Salon",
-        "Wraparound Rooftop Terrace",
-        "Jacuzzi / Soaking Tub",
-        "Full Kitchenette & Bar",
-        "VIP Check-In & Concierge",
-        "Complimentary Sky Lounge Reserve"
-      ],
-      highlights: [
-        {
-          de: "Zwei separate Schlafzimmer",
-          en: "Two Master Bedrooms",
-          it: "Due Camere Padronali"
-        },
-        {
-          de: "Rundum-Panoramaterrasse",
-          en: "Wraparound Rooftop Terrace",
-          it: "Terrazza Panoramica a 360°"
-        }
-      ],
-      viewType: {
-        de: "360° Rundumblick",
-        en: "360° Horizon View",
-        it: "Vista a 360 Gradi"
-      },
-      status: "published",
-      displayOrder: 4
     }
   ],
   skyLounge: {
     title: {
-      de: "SKY LOUNGE & ROOFTOP BAR",
-      en: "SKY LOUNGE & ROOFTOP BAR",
-      it: "SKY LOUNGE & ROOFTOP BAR"
+      de: "ROOFTOP SKY BAR",
+      en: "ROOFTOP SKY BAR",
+      it: "ROOFTOP SKY BAR"
     },
     subtitle: {
-      de: "Über den Dächern – Wo der Horizont beginnt",
-      en: "Above the Ordinary – Where the Horizon Unfolds",
-      it: "Sopra l'Ordinario – Dove l'Orizzonte Prende Vita"
+      de: "Hotel Aries & Sky Lounge Rooftop Erlebnis",
+      en: "Hotel Aries & Sky Lounge Rooftop Experience",
+      it: "Esperienza Rooftop Hotel Aries & Sky Lounge"
     },
     description: {
-      de: "Erleben Sie die Sky Lounge im Hotel Aries: Raffinierte Cocktails, stilvolle Sitzbereiche im Freien, atemberaubende Ausblicke und ein vibrierendes Abendambiente.",
-      en: "Experience the signature Sky Lounge at Hotel Aries: Handcrafted cocktails, curated small plates, sophisticated open-air seating, and an electric sunset-to-evening atmosphere.",
-      it: "Scopri la Sky Lounge dell'Hotel Aries: cocktail d'autore, delizie gourmet, arredi raffinati e un'atmosfera serale indimenticabile sotto le stelle."
+      de: "Genießen Sie stilvolle Momente in unserer Rooftop Sky Bar mit weitem Blick über die Stadt, elegantem Open-Air-Ambiente und erstklassiger Gastfreundschaft.",
+      en: "Enjoy elevated moments at our signature Rooftop Sky Bar featuring sweeping skyline horizons, sophisticated open-air seating, and curated hospitality.",
+      it: "Goditi momenti esclusivi nel nostro Rooftop Sky Bar con vista panoramica sulla città, arredi eleganti all'aperto e un servizio impeccabile."
     },
     mainImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2000&q=85",
     gallery: [
@@ -462,30 +368,85 @@ export const initialSiteData: SiteData = {
     },
     menuLink: "",
     reservationCtaText: {
-      de: "Tisch in der Sky Lounge reservieren",
-      en: "Reserve Sky Lounge Table",
-      it: "Prenota Tavolo Sky Lounge"
+      de: "Rooftop Sky Bar anfragen",
+      en: "Inquire Rooftop Sky Bar",
+      it: "Richiedi Rooftop Sky Bar"
     },
+    ctaText: {
+      de: "Rooftop Sky Bar anfragen",
+      en: "Inquire Rooftop Sky Bar",
+      it: "Richiedi Rooftop Sky Bar"
+    },
+    ctaUrl: "#inquire",
     status: "published",
+    visible: true,
     nightAmbienceImage: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80",
     seatingCapacity: "Indoor & Rooftop Terrace Seating",
     features: [
       {
-        de: "Panoramablick & Abendsonne",
-        en: "Panoramic Skyline Sunset Views",
-        it: "Vista Panoramica e Tramonto"
+        de: "Weitläufiger Panoramablick & Skyline-Horizont",
+        en: "Expansive Panoramic Skyline Views",
+        it: "Ampia Vista Panoramica sullo Skyline"
       },
       {
-        de: "Signature Cocktails & Weine",
-        en: "Signature Cocktails & Fine Wine",
-        it: "Cocktail d'Autore & Vini Pregiati"
+        de: "Stilvolles Open-Air & Lounge-Ambiente",
+        en: "Sophisticated Open-Air Lounge Setting",
+        it: "Ambiente Lounge Raffinato all'Aperto"
       },
       {
-        de: "Atmosphärische Musik & Beleuchtung",
-        en: "Ambient Music & Elegant Lighting",
-        it: "Musica d'Atmosfera & Luci Calde"
+        de: "Exklusive Abendstimmung & Drinks",
+        en: "Curated Evening Ambience & Refreshments",
+        it: "Atmosfera Serale Esclusiva & Drink Selezionati"
       }
     ]
+  },
+  restaurant: {
+    title: {
+      de: "RESTAURANT & DINING",
+      en: "RESTAURANT & DINING",
+      it: "RISTORANTE & DINING"
+    },
+    subtitle: {
+      de: "Kulinarische Gastfreundschaft im Hotel Aries",
+      en: "Culinary Hospitality at Hotel Aries",
+      it: "Ospitalità Culinaria all'Hotel Aries"
+    },
+    description: {
+      de: "Unser Hotelrestaurant heißt Gäste mit erlesenen Speisen, sorgfältig ausgewählten Zutaten und aufmerksamem Service in einem warmen, eleganten Ambiente willkommen.",
+      en: "Our hotel restaurant welcomes guests with fine culinary hospitality, thoughtfully prepared dishes, and attentive table service in a warm, refined atmosphere.",
+      it: "Il nostro ristorante accoglie gli ospiti con una raffinata proposta gastronomica, ingredienti selezionati e un servizio attento in un ambiente accogliente ed elegante."
+    },
+    mainImage: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2000&q=85",
+    gallery: [
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200&q=80"
+    ],
+    highlights: [
+      {
+        de: "Elegantes Speiseambiente für Hotelgäste & Besucher",
+        en: "Refined Dining Atmosphere for Hotel Guests & Visitors",
+        it: "Atmosfera Raffinata per Ospiti e Visitatori"
+      },
+      {
+        de: "Frische Zutaten & aufmerksame Gastfreundschaft",
+        en: "Fresh Ingredients & Attentive Hospitality",
+        it: "Ingredienti Freschi e Ospitalità Premurosa"
+      },
+      {
+        de: "Tischreservierung & Zimmerservice auf Anfrage",
+        en: "Table Reservations & In-Room Dining Inquiries",
+        it: "Prenotazione Tavoli e Servizio in Camera su Richiesta"
+      }
+    ],
+    ctaText: {
+      de: "Tisch anfragen",
+      en: "Reserve a Table",
+      it: "Richiedi un Tavolo"
+    },
+    ctaUrl: "#inquire",
+    status: "published",
+    visible: true
   },
   culinary: [
     {
@@ -541,196 +502,10 @@ export const initialSiteData: SiteData = {
       category: "skylounge",
       status: "published",
       displayOrder: 3
-    },
-    {
-      id: "cul-dinner",
-      title: {
-        de: "Fine Dining am Abend",
-        en: "Evening Fine Dining",
-        it: "Cena Fine Dining"
-      },
-      desc: {
-        de: "Kerzenlicht, mehrgängige Degustationsmenüs und meisterhafte Kochkunst für besondere Anlässe.",
-        en: "Candlelit elegance, multi-course chef tasting menus, and impeccable table service for memorable evenings.",
-        it: "Cene a lume di candela, menu degustazione e servizio impeccabile per occasioni speciali."
-      },
-      time: "18:30 – 23:00",
-      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80",
-      category: "dinner",
-      status: "published",
-      displayOrder: 4
     }
   ],
-  wellness: [
-    {
-      id: "amenity-pool",
-      title: {
-        de: "Beheizter Pool & Skyline Terrasse",
-        en: "Heated Skyline Pool & Sun Deck",
-        it: "Piscina Riscaldata & Terrazza Solarium"
-      },
-      desc: {
-        de: "Angenehm temperiertes Wasser und bequeme Liegen zum Entspannen unter freiem Himmel.",
-        en: "Temperature-controlled swimming pool with comfortable loungers and open-air horizon views.",
-        it: "Piscina con acqua a temperatura controllata e comodi lettini per rilassarsi all'aperto."
-      },
-      image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
-      tag: {
-        de: "Pool & Terrasse",
-        en: "Pool & Terrace",
-        it: "Piscina & Terrazza"
-      },
-      category: "pool",
-      status: "published",
-      displayOrder: 1
-    },
-    {
-      id: "amenity-spa",
-      title: {
-        de: "Spa, Sauna & Dampfbad",
-        en: "Spa, Thermal Sauna & Steam Room",
-        it: "Spa, Sauna Termale & Bagno Turco"
-      },
-      desc: {
-        de: "Wohltuende Wärme und stille Ruheräume zur vollkommenen Entschleunigung nach einem erlebnisreichen Tag.",
-        en: "Thermal sauna heat, aromatic steam, and peaceful relaxation lounges to unwind and rejuvenate.",
-        it: "Calore rilassante della sauna, vapore aromatico e aree relax per rigenerarsi completamente."
-      },
-      image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      tag: {
-        de: "Regeneration",
-        en: "Rejuvenation",
-        it: "Rigenerazione"
-      },
-      category: "spa",
-      status: "published",
-      displayOrder: 2
-    },
-    {
-      id: "amenity-fitness",
-      title: {
-        de: "Modernes Fitness Center",
-        en: "Modern Fitness Studio",
-        it: "Centro Fitness Moderno"
-      },
-      desc: {
-        de: "Modernste Cardio- und Kraftgeräte für Ihr tägliches Workout während des Hotelaufenthalts.",
-        en: "State-of-the-art cardio and strength training equipment available for guest wellness and fitness routines.",
-        it: "Attrezzature all'avanguardia per cardio e pesi dedicate al benessere e all'allenamento degli ospiti."
-      },
-      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80",
-      tag: {
-        de: "Fitness & Training",
-        en: "Fitness & Training",
-        it: "Fitness & Allenamento"
-      },
-      category: "gym",
-      status: "published",
-      displayOrder: 3
-    },
-    {
-      id: "amenity-wifi",
-      title: {
-        de: "High-Speed Wi-Fi & Business Service",
-        en: "High-Speed Wi-Fi & Connectivity",
-        it: "Wi-Fi ad Alta Velocità & Connettività"
-      },
-      desc: {
-        de: "Zuverlässiges Hochgeschwindigkeits-Internet in allen Zimmern, Suiten, Loungebereichen und Konferenzräumen.",
-        en: "Seamless high-speed wireless connectivity throughout all rooms, suites, lounges, and public spaces.",
-        it: "Connessione internet ultraveloce in tutte le camere, suite e spazi comuni dell'hotel."
-      },
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
-      tag: {
-        de: "Konnektivität",
-        en: "Connectivity",
-        it: "Connettività"
-      },
-      category: "wifi",
-      status: "published",
-      displayOrder: 4
-    },
-    {
-      id: "amenity-concierge",
-      title: {
-        de: "24/7 Concierge & Parkservice",
-        en: "24/7 Concierge & Valet Parking",
-        it: "Concierge 24/7 & Parcheggio"
-      },
-      desc: {
-        de: "Persönlicher Gästeservice rund um die Uhr, Gepäckservice und sichere Parkmöglichkeiten direkt am Hotel.",
-        en: "Dedicated round-the-clock guest assistance, secure private parking, and professional luggage handling.",
-        it: "Assistenza dedicata 24 ore su 24, parcheggio custodito e servizio bagagli sempre a disposizione."
-      },
-      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
-      tag: {
-        de: "Guest Services",
-        en: "Guest Services",
-        it: "Servizi Ospiti"
-      },
-      category: "parking",
-      status: "published",
-      displayOrder: 5
-    }
-  ],
-  experiences: [
-    {
-      id: "exp-sunset",
-      title: {
-        de: "Skyline Sunset Abend",
-        en: "Skyline Sunset Evening",
-        it: "Serata Sunset Skyline"
-      },
-      category: "culture",
-      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80",
-      shortDesc: {
-        de: "Erleben Sie den spektakulären Sonnenuntergang von unserer Sky Lounge bei einem Glas Champagner oder Cocktail.",
-        en: "Take in breathtaking horizon sunset colors from the open terrace of our Sky Lounge with handcrafted cocktails.",
-        it: "Ammira gli spettacolari colori del tramonto dalla terrazza della Sky Lounge accompagnato da cocktail d'autore."
-      },
-      details: {
-        de: "Genießen Sie reservierte Premium-Plätze zur goldenen Stunde, abgestimmte Vorspeisen und den Blick auf die leuchtende Skyline.",
-        en: "Enjoy reserved prime seating during the golden hour, paired chef small plates, and an elevated social atmosphere.",
-        it: "Goditi posti riservati durante l'ora d'oro, assaggi dello chef e una musica lounge d'accompagnamento."
-      },
-      season: {
-        de: "Ganzjährig",
-        en: "Year-Round",
-        it: "Tutto l'Anno"
-      },
-      duration: "18:00 – 21:00",
-      status: "published",
-      displayOrder: 1
-    },
-    {
-      id: "exp-dining",
-      title: {
-        de: "Exklusives Chefkoch-Dinner",
-        en: "Private Chef's Tasting Dinner",
-        it: "Cena Degustazione dello Chef"
-      },
-      category: "culture",
-      image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
-      shortDesc: {
-        de: "Ein individuell abgestimmtes Mehrgang-Menü für besondere private Momente und Feiern.",
-        en: "A bespoke multi-course gourmet tasting menu crafted for celebratory occasions and intimate gatherings.",
-        it: "Un menu degustazione personalizzato a più portate pensato per ricorrenze e momenti speciali."
-      },
-      details: {
-        de: "Unser Küchenteam kreiert ein exklusives Gourmet-Erlebnis nach Ihren persönlichen Wünschen mit passender Weinbegleitung.",
-        en: "Our culinary team designs an exceptional dining journey tailored to your palate, paired with hand-selected vintages.",
-        it: "La nostra brigata di cucina crea un'esperienza gastronomica unica calibrata sui vostri gusti con abbinamenti di vini."
-      },
-      season: {
-        de: "Auf Vorbestellung",
-        en: "By Reservation",
-        it: "Su Prenotazione"
-      },
-      duration: "ca. 3 Stunden",
-      status: "published",
-      displayOrder: 2
-    }
-  ],
+  wellness: [],
+  experiences: [],
   gallery: [
     {
       id: "gal-1",
@@ -772,9 +547,9 @@ export const initialSiteData: SiteData = {
       id: "gal-3",
       url: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1600&q=85",
       title: {
-        de: "Executive Zimmer Interieur",
-        en: "Executive Room Interior",
-        it: "Interni Camera Executive"
+        de: "Deluxe Zimmer Interieur",
+        en: "Deluxe Room Interior",
+        it: "Interni Camera Deluxe"
       },
       category: "rooms",
       caption: {
@@ -790,7 +565,7 @@ export const initialSiteData: SiteData = {
       id: "gal-4",
       url: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1600&q=85",
       title: {
-        de: "Restaurant & Kulinarik",
+        de: "Restaurant & Dining",
         en: "Dining Room & Restaurant",
         it: "Ristorante & Sala da Pranzo"
       },
@@ -806,19 +581,19 @@ export const initialSiteData: SiteData = {
     },
     {
       id: "gal-5",
-      url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1600&q=85",
+      url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=85",
       title: {
-        de: "Beheizter Skyline Pool",
-        en: "Heated Skyline Swimming Pool",
-        it: "Piscina Riscaldata Panoramica"
+        de: "Hotel Lobby & Rezeption",
+        en: "Hotel Lobby & Welcome Reception",
+        it: "Lobby dell'Hotel & Ricevimento"
       },
-      category: "amenities",
+      category: "hotel",
       caption: {
-        de: "Entspannung mit Weitblick auf der Sonnenterrasse",
-        en: "Sun terrace relaxation with peaceful horizon vistas",
-        it: "Relax sulla terrazza solarium con splendida vista"
+        de: "Herzlicher Empfang und persönliche Gästebetreuung",
+        en: "Warm welcome and personalized guest assistance",
+        it: "Calorosa accoglienza e assistenza dedicata agli ospiti"
       },
-      altText: "Hotel Aries heated pool terrace",
+      altText: "Hotel Aries lobby and reception",
       displayOrder: 5,
       featured: true
     },
@@ -844,34 +619,34 @@ export const initialSiteData: SiteData = {
       id: "gal-7",
       url: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1600&q=85",
       title: {
-        de: "Panorama Suite Badezimmer",
-        en: "Panorama Suite Marble Bathroom",
-        it: "Bagno in Marmo Suite Panorama"
+        de: "Modernes Badezimmer mit Regendusche",
+        en: "Modern Luxury Bathroom & Vanity",
+        it: "Bagno Moderno con Doccia a Pioggia"
       },
       category: "rooms",
       caption: {
-        de: "Freistehende Badewanne und Marmorwaschtisch",
-        en: "Deep soaking bath and marble double vanity",
-        it: "Vasca freestanding e doppio lavabo in marmo"
+        de: "Elegante Regendusche und Marmorwaschtisch",
+        en: "Spacious rain shower and marble vanity",
+        it: "Doccia a pioggia e lavabo in marmo"
       },
-      altText: "Hotel Aries luxury suite bathroom",
+      altText: "Hotel Aries luxury room bathroom",
       displayOrder: 7
     },
     {
       id: "gal-8",
-      url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=85",
+      url: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1600&q=85",
       title: {
-        de: "Wellness Spa & Ruheraum",
-        en: "Wellness Spa & Relaxation Suite",
-        it: "Spa & Area Relax"
+        de: "Supreme Zimmer Lounge",
+        en: "Supreme Room Seating & Suite Lounge",
+        it: "Lounge Camera Supreme"
       },
-      category: "amenities",
+      category: "rooms",
       caption: {
-        de: "Ruhe und Regeneration für Körper und Geist",
-        en: "Rejuvenating thermal tranquility for body and mind",
-        it: "Tranquillità termale per corpo e mente"
+        de: "Erweiterte Sitzecke und höchster Schlafkomfort",
+        en: "Extended lounge sitting area and supreme bedding comfort",
+        it: "Ampio salotto e massimo comfort per il riposo"
       },
-      altText: "Hotel Aries spa and sauna",
+      altText: "Hotel Aries supreme room seating",
       displayOrder: 8
     }
   ],
@@ -917,8 +692,8 @@ export const initialSiteData: SiteData = {
     }
   ],
   contact: {
-    hotelName: "Hotel Aries & Sky Lounge",
-    primaryName: "Hotel Aries",
+    hotelName: "Aries & Hotel Sky Lounge",
+    primaryName: "Aries & Hotel Sky Lounge",
     subtitle: "Sky Lounge",
     address: "SBP, City of dreams, high ground road zirakpur. 140603",
     postalCode: "140603",
@@ -946,8 +721,16 @@ export const initialSiteData: SiteData = {
     facebook: "",
     youtube: "",
     vatNumber: "",
-    copyrightText: "© Hotel Aries & Sky Lounge. All rights reserved.",
-    footerDescription: "Experience modern luxury accommodations, elevated dining, and panoramic rooftop drinks at Hotel Aries & Sky Lounge."
+    logo: "",
+    logoLight: "",
+    logoDark: "",
+    logoHeight: 40,
+    logoDisplayMode: "logo_and_text",
+    logoShape: "natural",
+    showLogoInFooter: true,
+    showLogoInDrawer: true,
+    copyrightText: "© Aries & Hotel Sky Lounge. All rights reserved.",
+    footerDescription: "Experience modern luxury accommodations, elevated dining, and panoramic rooftop drinks at Aries & Hotel Sky Lounge."
   },
   pages: {
     intro: {
@@ -977,9 +760,9 @@ export const initialSiteData: SiteData = {
         it: "“L'autentica ospitalità consiste nel far sentire ogni ospite a casa, elevando ogni istante oltre l'ordinario.”"
       },
       quoteAuthor: "Hotel Aries Management",
-      statSuites: "Rooms & Suites",
-      statVineyard: "Sky Lounge",
-      statSunDays: "24/7 Service"
+      statSuites: "26 Rooms",
+      statVineyard: "Sky Bar",
+      statSunDays: "Restaurant"
     },
     suitesIntro: {
       heading: {
@@ -1025,18 +808,18 @@ export const initialSiteData: SiteData = {
     wellnessIntro: {
       heading: {
         de: "Hotel-Ausstattung & Annehmlichkeiten",
-        en: "Hotel Amenities",
+        en: "Hotel Amenities & Services",
         it: "Servizi & Comfort dell'Hotel"
       },
       subtitle: {
-        de: "Alles für Ihren Komfort – Beheizter Pool, Fitness, Spa und 24/7 Gästeservice.",
-        en: "Everything for your comfort – Heated pool, spa sauna, modern fitness, and 24/7 guest services.",
-        it: "Tutto per il vostro benessere – Piscina riscaldata, spa, palestra moderna e servizio 24/7."
+        de: "Alles für Ihren Komfort – Moderne Zimmer, Rooftop Sky Bar, Restaurant und aufmerksamer Service.",
+        en: "Everything for your comfort – Modern guest rooms, rooftop Sky Bar, restaurant dining, and attentive hospitality.",
+        it: "Tutto per il vostro comfort – Camere moderne, Rooftop Sky Bar, ristorante e accoglienza calorosa."
       },
       subtext: {
-        de: "Erstklassige Annehmlichkeiten sorgen dafür, dass Sie während Ihres Aufenthalts vollkommen entspannen und neue Energie schöpfen können.",
-        en: "Thoughtfully curated facilities ensuring total relaxation and seamless convenience throughout your visit.",
-        it: "Dotazioni di altissimo livello per garantire relax totale e comfort durante l'intero soggiorno."
+        de: "Durchdachte Ausstattungen und herzlicher Service sorgen für einen rundum angenehmen Aufenthalt.",
+        en: "Thoughtfully curated facilities and warm hospitality ensuring seamless comfort throughout your visit.",
+        it: "Dotazioni curate e calda ospitalità per garantire un soggiorno piacevole e senza pensieri."
       }
     },
     aboutStory: {
@@ -1056,14 +839,14 @@ export const initialSiteData: SiteData = {
         it: "L'Hotel Aries & Sky Lounge nasce con una visione chiara: offrire un'ospitalità moderna di alto livello combinando camere raffinate, servizio impeccabile e una spettacolare Sky Lounge."
       },
       storyP2: {
-        de: "Unsere Zimmer und Suiten bieten stilvolle Rückzugsorte mit ergonomischem Design, edlen Betten und moderner Technik. Die Krönung des Hauses bildet die spektakuläre Sky Lounge über den Dächern.",
-        en: "Our rooms and suites provide tranquil sanctuaries featuring thoughtful design, premium bedding, and state-of-the-art comforts. Crowning the property is our iconic rooftop Sky Lounge.",
-        it: "Le nostre camere e suite offrono oasi di quiete con design contemporaneo, letti ultra-comfort e tecnologie moderne, coronate dalla suggestiva Sky Lounge panoramica."
+        de: "Unsere 26 Zimmer – darunter 24 Deluxe Zimmer und 2 exklusive Supreme Zimmer – bieten stilvolle Rückzugsorte mit ergonomischem Design, edlen Betten und moderner Technik. Die Krönung des Hauses bildet die spektakuläre Rooftop Sky Bar über den Dächern.",
+        en: "Our 26 rooms – featuring 24 Deluxe Rooms and 2 exclusive Supreme Rooms – provide tranquil sanctuaries with ergonomic design, premium bedding, and modern comforts. Crowning the property is our iconic Rooftop Sky Bar.",
+        it: "Le nostre 26 camere – tra cui 24 Camere Deluxe e 2 esclusive Camere Supreme – offrono oasi di quiete con design contemporaneo, letti ultra-comfort e tecnologie moderne, coronate dalla suggestiva Rooftop Sky Bar."
       },
       storyP3: {
-        de: "Unser engagiertes Team ist rund um die Uhr für Sie da, um Ihren Aufenthalt so angenehm und unvergesslich wie möglich zu gestalten.",
-        en: "Our dedicated team is on hand 24/7 to provide discreet, attentive hospitality and ensure your stay is seamless from check-in to departure.",
-        it: "Il nostro team dedicato è a vostra completa disposizione 24 ore su 24 per rendere ogni soggiorno memorabile e senza pensieri."
+        de: "Unser engagiertes Team heißt Sie herzlich willkommen und sorgt für einen aufmerksamen, persönlichen Service während Ihres gesamten Aufenthalts.",
+        en: "Our dedicated team welcomes you warmly and provides attentive, personal hospitality throughout your entire stay.",
+        it: "Il nostro team dedicato vi dà un caloroso benvenuto offrendo un servizio attento e personalizzato durante tutto il soggiorno."
       },
       hostName: "Hotel Aries Team",
       hostRole: {
@@ -1074,9 +857,9 @@ export const initialSiteData: SiteData = {
       hostImage: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
     },
     seo: {
-      metaTitle: "Hotel Aries & Sky Lounge | Official Website",
-      metaDescription: "Welcome to Hotel Aries & Sky Lounge. Luxury hotel rooms, panoramic rooftop sky lounge, elevated dining, and exceptional hospitality. Book direct for best rates.",
-      keywords: "Hotel Aries, Sky Lounge, Luxury Hotel, Rooftop Bar, Hotel Rooms, Suites, Fine Dining, Hotel Booking",
+      metaTitle: "Aries & Hotel Sky Lounge | Official Website",
+      metaDescription: "Welcome to Aries & Hotel Sky Lounge. Boutique 26-room hotel with 24 Deluxe Rooms, 2 Supreme Rooms, panoramic Rooftop Sky Bar, and refined Hotel Restaurant dining in Zirakpur.",
+      keywords: "Aries Hotel, Hotel Aries, Sky Lounge, Luxury Hotel Zirakpur, 26 Rooms Hotel, Deluxe Rooms, Supreme Rooms, Rooftop Bar, Hotel Restaurant, High Ground Road Zirakpur",
       ogImage: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
     }
   }
@@ -1099,17 +882,17 @@ export const sampleImageLibrary = [
     category: "rooms"
   },
   {
-    title: "Heated Skyline Swimming Pool",
-    url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1600&q=85",
-    category: "amenities"
+    title: "Supreme Room Lounge Suite",
+    url: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1600&q=85",
+    category: "rooms"
   },
   {
-    title: "Artisan Dining & Gourmet Breakfast",
+    title: "Artisan Dining & Breakfast",
     url: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1600&q=85",
     category: "dining"
   },
   {
-    title: "Panorama Suite Marble Bath",
+    title: "Modern Luxury Rain Shower & Vanity",
     url: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1600&q=85",
     category: "rooms"
   },
@@ -1119,7 +902,7 @@ export const sampleImageLibrary = [
     category: "skylounge"
   },
   {
-    title: "Hotel Reception & Concierge",
+    title: "Hotel Reception & Welcome Desk",
     url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=85",
     category: "hotel"
   }

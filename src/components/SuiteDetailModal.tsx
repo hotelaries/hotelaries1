@@ -52,7 +52,7 @@ export const SuiteDetailModal: React.FC = () => {
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#23201C]/10 bg-[#F5F2EB]/60">
             <div>
               <span className="text-[10px] uppercase tracking-[0.2em] text-[#9E7D53] font-semibold font-sans-clean">
-                {selectedSuite.category} · {selectedSuite.size}
+                {selectedSuite.category} · {selectedSuite.size} {selectedSuite.roomCount ? `· ${selectedSuite.roomCount} Rooms Available` : ''}
               </span>
               <h3 className="font-serif-luxury text-xl sm:text-2xl font-light text-[#1E1B18]">
                 {t(selectedSuite.name)}

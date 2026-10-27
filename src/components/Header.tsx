@@ -28,10 +28,11 @@ export const Header: React.FC<HeaderProps> = ({ isHeroPage = true }) => {
 
   const navItems = [
     { key: 'home', label: { de: 'Home', en: 'Home', it: 'Home' } },
-    { key: 'suites', label: { de: 'Zimmer & Suiten', en: 'Rooms & Suites', it: 'Camere & Suite' } },
-    { key: 'skylounge', label: { de: 'Sky Lounge', en: 'Sky Lounge', it: 'Sky Lounge' } },
-    { key: 'experience', label: { de: 'Erlebnisse', en: 'Experiences', it: 'Esperienze' } },
+    { key: 'suites', label: { de: 'Zimmer & Suiten (26)', en: 'Rooms & Suites', it: 'Camere & Suite' } },
+    { key: 'dining', label: { de: 'Restaurant & Dining', en: 'Restaurant / Dining', it: 'Ristorante & Dining' } },
+    { key: 'skylounge', label: { de: 'Rooftop Sky Bar', en: 'Rooftop Sky Bar', it: 'Rooftop Sky Bar' } },
     { key: 'wellness', label: { de: 'Ausstattung & Wellness', en: 'Amenities & Wellness', it: 'Servizi & Wellness' } },
+    { key: 'experience', label: { de: 'Erlebnisse', en: 'Experiences', it: 'Esperienze' } },
     { key: 'gallery', label: { de: 'Galerie', en: 'Gallery', it: 'Galleria' } },
     { key: 'about', label: { de: 'Über das Hotel', en: 'About Hotel', it: 'Chi Siamo' } },
     { key: 'contact', label: { de: 'Kontakt & Anreise', en: 'Contact & Location', it: 'Contatto & Posizione' } },
@@ -75,23 +76,73 @@ export const Header: React.FC<HeaderProps> = ({ isHeroPage = true }) => {
           </div>
 
           {/* Top-Middle: Centered HOTEL ARIES & SKY LOUNGE Logo */}
-          <div className="flex flex-col items-center justify-center text-center cursor-pointer select-none" onClick={() => handleNavClick('home')}>
-            <h1
-              id="header-hotel-title"
-              className={`font-serif-luxury text-xl sm:text-2xl md:text-3xl tracking-[0.24em] uppercase font-light transition-all duration-300 ${
-                isLight ? 'text-[#1E1B18]' : 'text-white drop-shadow-xs'
-              }`}
-            >
-              {siteData.contact.hotelName || 'HOTEL ARIES'}
-            </h1>
-            <span
-              id="header-hotel-subtitle"
-              className={`text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.35em] uppercase font-light mt-0.5 transition-colors duration-300 ${
-                isLight ? 'text-[#7D7468]' : 'text-white/85'
-              }`}
-            >
-              {siteData.contact.subtitle || 'SKY LOUNGE'}
-            </span>
+          <div
+            className="flex items-center justify-center text-center cursor-pointer select-none group"
+            onClick={() => handleNavClick('home')}
+          >
+            {siteData.contact.logo && siteData.contact.logoDisplayMode !== 'text_only' ? (
+              <div className="flex items-center gap-2.5 sm:gap-3.5 justify-center">
+                <img
+                  id="header-logo-image"
+                  src={siteData.contact.logo}
+                  alt={siteData.contact.hotelName || 'Hotel Aries'}
+                  style={{
+                    height: `${siteData.contact.logoHeight || 38}px`,
+                    maxHeight: '64px'
+                  }}
+                  className={`w-auto object-contain transition-all duration-300 ${
+                    siteData.contact.logoShape === 'circle'
+                      ? 'rounded-full'
+                      : siteData.contact.logoShape === 'rounded'
+                      ? 'rounded-md'
+                      : ''
+                  }`}
+                />
+                {siteData.contact.logoDisplayMode !== 'logo_only' && (
+                  <div className="flex flex-col text-left">
+                    <h1
+                      id="header-hotel-title"
+                      className={`font-serif-luxury text-base sm:text-xl md:text-2xl tracking-[0.22em] uppercase font-light transition-all duration-300 leading-tight ${
+                        isLight ? 'text-[#1E1B18]' : 'text-white drop-shadow-xs'
+                      }`}
+                    >
+                      {siteData.contact.hotelName || 'Aries & Hotel Sky Lounge'}
+                    </h1>
+                    {siteData.contact.subtitle && !siteData.contact.hotelName?.toLowerCase().includes('sky lounge') && (
+                      <span
+                        id="header-hotel-subtitle"
+                        className={`text-[8px] sm:text-[9px] md:text-[10px] tracking-[0.35em] uppercase font-light mt-0.5 transition-colors duration-300 ${
+                          isLight ? 'text-[#7D7468]' : 'text-white/85'
+                        }`}
+                      >
+                        {siteData.contact.subtitle}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center">
+                <h1
+                  id="header-hotel-title"
+                  className={`font-serif-luxury text-xl sm:text-2xl md:text-3xl tracking-[0.24em] uppercase font-light transition-all duration-300 ${
+                    isLight ? 'text-[#1E1B18]' : 'text-white drop-shadow-xs'
+                  }`}
+                >
+                  {siteData.contact.hotelName || 'Aries & Hotel Sky Lounge'}
+                </h1>
+                {siteData.contact.subtitle && !siteData.contact.hotelName?.toLowerCase().includes('sky lounge') && (
+                  <span
+                    id="header-hotel-subtitle"
+                    className={`text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.35em] uppercase font-light mt-0.5 transition-colors duration-300 ${
+                      isLight ? 'text-[#7D7468]' : 'text-white/85'
+                    }`}
+                  >
+                    {siteData.contact.subtitle}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Top-Right: Phone, Booking / Favorite Icon, Language Selector */}
@@ -211,13 +262,22 @@ export const Header: React.FC<HeaderProps> = ({ isHeroPage = true }) => {
           >
             {/* Top Bar inside drawer */}
             <div className="flex items-center justify-between max-w-6xl mx-auto w-full border-b border-white/10 pb-6">
-              <div className="flex flex-col">
-                <span className="font-serif-luxury text-xl sm:text-2xl tracking-[0.25em] font-light">
-                  {siteData.contact.hotelName}
-                </span>
-                <span className="text-[9px] tracking-[0.3em] text-white/50 uppercase">
-                  {siteData.contact.subtitle}
-                </span>
+              <div className="flex items-center gap-3.5">
+                {siteData.contact.logo && siteData.contact.showLogoInDrawer !== false && (
+                  <img
+                    src={siteData.contact.logo}
+                    alt={siteData.contact.hotelName || 'Logo'}
+                    className="h-10 w-auto object-contain"
+                  />
+                )}
+                <div className="flex flex-col">
+                  <span className="font-serif-luxury text-xl sm:text-2xl tracking-[0.25em] font-light">
+                    {siteData.contact.hotelName}
+                  </span>
+                  <span className="text-[9px] tracking-[0.3em] text-white/50 uppercase">
+                    {siteData.contact.subtitle}
+                  </span>
+                </div>
               </div>
               <button
                 id="nav-drawer-close-btn"

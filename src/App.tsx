@@ -13,6 +13,7 @@ import { WellnessPage } from './pages/WellnessPage';
 import { GalleryPage } from './pages/GalleryPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
+import { DiningPage } from './pages/DiningPage';
 import { AdminPage } from './pages/AdminPage';
 
 const AppContent: React.FC = () => {
@@ -97,6 +98,8 @@ const AppContent: React.FC = () => {
           <SuitesPage />
         ) : currentPage === 'skylounge' ? (
           <SkyLoungePage />
+        ) : currentPage === 'dining' || currentPage === 'culinary' ? (
+          <DiningPage />
         ) : currentPage === 'experience' ? (
           <ExperiencePage />
         ) : currentPage === 'wellness' ? (

@@ -5,6 +5,9 @@ import { ImageUploader } from '../components/admin/ImageUploader';
 import { HeroManager } from '../components/admin/HeroManager';
 import { PagesManager } from '../components/admin/PagesManager';
 import { LocationMapManager } from '../components/admin/LocationMapManager';
+import { LogoManager } from '../components/admin/LogoManager';
+import { RestaurantManager } from '../components/admin/RestaurantManager';
+import { SkyBarManager } from '../components/admin/SkyBarManager';
 import {
   LayoutDashboard,
   Sliders,
@@ -32,13 +35,17 @@ import {
   Eye,
   ShieldCheck,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Lock
 } from 'lucide-react';
 
 export type CanonicalAdminTab =
   | 'dashboard'
+  | 'logo'
   | 'hero'
   | 'suites'
+  | 'restaurant'
+  | 'skylounge'
   | 'experiences'
   | 'wellness'
   | 'culinary'
@@ -53,8 +60,11 @@ export type AdminTab = CanonicalAdminTab | 'overview' | 'testimonials' | 'inquir
 
 export const TAB_ROUTES: Record<CanonicalAdminTab, string> = {
   dashboard: '/admin/dashboard',
+  logo: '/admin/logo',
   hero: '/admin/hero',
   suites: '/admin/suites',
+  restaurant: '/admin/restaurant',
+  skylounge: '/admin/skylounge',
   experiences: '/admin/experiences',
   wellness: '/admin/wellness',
   culinary: '/admin/culinary',
@@ -72,8 +82,11 @@ export const getTabFromLocation = (): CanonicalAdminTab => {
   const hash = window.location.hash.toLowerCase();
 
   const parseString = (str: string): CanonicalAdminTab | null => {
+    if (str.includes('/admin/logo') || str.includes('admin/logo')) return 'logo';
     if (str.includes('/admin/hero') || str.includes('admin/hero')) return 'hero';
     if (str.includes('/admin/suites') || str.includes('admin/suites')) return 'suites';
+    if (str.includes('/admin/restaurant') || str.includes('admin/restaurant') || str.includes('admin/dining')) return 'restaurant';
+    if (str.includes('/admin/skylounge') || str.includes('admin/skylounge') || str.includes('admin/skybar')) return 'skylounge';
     if (str.includes('/admin/experiences') || str.includes('admin/experiences')) return 'experiences';
     if (str.includes('/admin/wellness') || str.includes('admin/wellness')) return 'wellness';
     if (str.includes('/admin/culinary') || str.includes('admin/culinary')) return 'culinary';
@@ -113,8 +126,8 @@ export const AdminPage: React.FC = () => {
   } = useSite();
 
   // Local login input state
+  const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
-  const [emailInput, setEmailInput] = useState('admin@lingers.it');
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -193,16 +206,20 @@ export const AdminPage: React.FC = () => {
   // Login handler connected to SiteContext.loginAdmin
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!usernameInput.trim()) {
+      setLoginError('Please enter your username.');
+      return;
+    }
     if (!passwordInput.trim()) {
-      setLoginError('Please enter the password.');
+      setLoginError('Please enter your password.');
       return;
     }
     setIsLoggingIn(true);
     setLoginError('');
     try {
-      const success = await loginAdmin(emailInput.trim(), passwordInput.trim());
+      const success = await loginAdmin(usernameInput.trim(), passwordInput.trim());
       if (!success) {
-        setLoginError('Invalid credentials. (Hint: lingers2025 or admin)');
+        setLoginError('Invalid credentials. Please verify your username and password.');
       }
     } catch (err: any) {
       setLoginError(err.message || 'Login failed. Please try again.');
@@ -254,57 +271,61 @@ export const AdminPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#1E1B18] flex items-center justify-center p-4">
         <div className="bg-[#FAF8F5] rounded-2xl max-w-md w-full p-8 shadow-2xl border border-white/20 text-[#23201C]">
-          <div className="text-center space-y-2 mb-8">
+          <div className="text-center space-y-2 mb-6">
             <div className="w-12 h-12 rounded-xl bg-[#9E7D53]/15 text-[#9E7D53] flex items-center justify-center mx-auto mb-3">
               <ShieldCheck className="w-6 h-6" />
             </div>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#9E7D53] font-semibold">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-[#9E7D53] font-semibold font-sans-clean">
               Management Portal
             </span>
             <h2 className="font-serif-luxury text-3xl font-light text-[#1E1B18]">
               HOTEL ARIES Admin
             </h2>
             <p className="text-xs text-[#7D7468]">
-              Enter your access credentials to manage content, rates & inquiries.
+              Enter your access credentials to manage hotel content, rates, rooms & dining.
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-[11px] uppercase tracking-wider text-[#7D7468] font-medium mb-1">
+                Username
+              </label>
+              <input
+                type="text"
+                id="admin-username-input"
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+                placeholder="Enter your username..."
+                autoComplete="username"
+                className="w-full border border-[#23201C]/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#9E7D53] bg-white text-[#1E1B18]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] uppercase tracking-wider text-[#7D7468] font-medium mb-1">
                 Password
               </label>
               <input
                 type="password"
+                id="admin-password-input"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 placeholder="Enter password..."
-                className="w-full border border-[#23201C]/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#9E7D53] bg-white"
+                autoComplete="current-password"
+                className="w-full border border-[#23201C]/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#9E7D53] bg-white text-[#1E1B18]"
               />
               {loginError && <p className="text-xs text-red-600 mt-1.5">{loginError}</p>}
             </div>
 
             <button
               type="submit"
+              id="admin-signin-button"
               disabled={isLoggingIn}
-              className="w-full py-3 bg-[#9E7D53] hover:bg-[#8C6D44] text-white text-xs uppercase tracking-[0.2em] font-medium rounded-lg transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-[#9E7D53] hover:bg-[#8C6D44] text-white text-xs uppercase tracking-[0.2em] font-medium rounded-lg transition-colors disabled:opacity-50 mt-2"
             >
               {isLoggingIn ? 'Signing In...' : 'Sign In to CMS'}
             </button>
-
-            {/* Demo Helper Button */}
-            <div className="pt-2 border-t border-[#23201C]/10 text-center">
-              <button
-                type="button"
-                onClick={async () => {
-                  setPasswordInput('lingers2025');
-                  await loginAdmin('hotelaries764@gmail.com', 'lingers2025');
-                }}
-                className="text-xs text-[#9E7D53] hover:underline font-medium"
-              >
-                ⚡ One-Click Quick Demo Login (lingers2025)
-              </button>
-            </div>
           </form>
 
           <div className="mt-6 text-center">
@@ -331,11 +352,14 @@ export const AdminPage: React.FC = () => {
     badge?: number;
   }> = [
     { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard, route: '/admin/dashboard' },
+    { id: 'logo', label: 'Logo & Branding', icon: Sparkles, route: '/admin/logo' },
     { id: 'hero', label: 'Hero Section & Slider', icon: Sliders, route: '/admin/hero' },
-    { id: 'suites', label: 'Rooms & Suites', icon: BedDouble, route: '/admin/suites' },
-    { id: 'experiences', label: 'Sky Lounge & Leisure', icon: Compass, route: '/admin/experiences' },
+    { id: 'suites', label: 'Rooms & Suites (26 Rooms)', icon: BedDouble, route: '/admin/suites' },
+    { id: 'restaurant', label: 'Restaurant & Dining', icon: Utensils, route: '/admin/restaurant' },
+    { id: 'skylounge', label: 'Rooftop Sky Bar', icon: Sparkles, route: '/admin/skylounge' },
+    { id: 'experiences', label: 'Leisure & Activities', icon: Compass, route: '/admin/experiences' },
     { id: 'wellness', label: 'Wellness & Amenities', icon: Waves, route: '/admin/wellness' },
-    { id: 'culinary', label: 'Dining & Sky Lounge Menu', icon: Utensils, route: '/admin/culinary' },
+    { id: 'culinary', label: 'Culinary Schedule', icon: Utensils, route: '/admin/culinary' },
     { id: 'gallery', label: 'Photo Gallery', icon: ImageIcon, route: '/admin/gallery' },
     { id: 'pages', label: 'Brand Story & Pages', icon: FileText, route: '/admin/pages' },
     { id: 'reviews', label: 'Reviews & Highlights', icon: MessageSquareQuote, route: '/admin/reviews' },
@@ -366,7 +390,14 @@ export const AdminPage: React.FC = () => {
             {isMobileMenuOpen ? <X className="w-5 h-5 text-[#9E7D53]" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            {siteData.contact.logo ? (
+              <img
+                src={siteData.contact.logo}
+                alt="Logo"
+                className="h-6 w-auto object-contain shrink-0"
+              />
+            ) : null}
             <span
               className={`w-2.5 h-2.5 rounded-full ${
                 isSyncing ? 'bg-amber-400 animate-ping' : isFirebaseConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
@@ -657,6 +688,17 @@ export const AdminPage: React.FC = () => {
               />
             )}
 
+            {activeTab === 'logo' && (
+              <LogoManager
+                contact={siteData.contact}
+                onSave={async (updatedContact) => {
+                  await updateSiteData({ contact: updatedContact });
+                  showSaveSuccess('Logo & Brand configuration saved and published!');
+                }}
+                showSaveSuccess={showSaveSuccess}
+              />
+            )}
+
             {activeTab === 'hero' && (
               <HeroManager
                 hero={siteData.hero}
@@ -677,6 +719,30 @@ export const AdminPage: React.FC = () => {
                   await updateSiteData({ suites: updatedSuites });
                   showSaveSuccess('Suites catalog updated!');
                 }}
+              />
+            )}
+
+            {activeTab === 'restaurant' && (
+              <RestaurantManager
+                restaurant={siteData.restaurant}
+                lang={contentLang}
+                onSave={async (updatedRestaurant) => {
+                  await updateSiteData({ restaurant: updatedRestaurant });
+                  showSaveSuccess('Restaurant settings updated and published!');
+                }}
+                showSaveSuccess={showSaveSuccess}
+              />
+            )}
+
+            {activeTab === 'skylounge' && (
+              <SkyBarManager
+                skyLounge={siteData.skyLounge}
+                lang={contentLang}
+                onSave={async (updatedSkyLounge) => {
+                  await updateSiteData({ skyLounge: updatedSkyLounge });
+                  showSaveSuccess('Rooftop Sky Bar settings updated and published!');
+                }}
+                showSaveSuccess={showSaveSuccess}
               />
             )}
 
@@ -997,10 +1063,10 @@ const SuitesManager: React.FC<{
       <div className="flex items-center justify-between">
         <div>
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#9E7D53] font-semibold">
-            Accommodations
+            Accommodations & Capacity
           </span>
           <h2 className="font-serif-luxury text-2xl font-light text-[#1E1B18]">
-            Suites & Apartments Manager ({suiteList.length})
+            Rooms & Suites Manager (26 Total Rooms)
           </h2>
         </div>
         <button
@@ -1008,8 +1074,28 @@ const SuitesManager: React.FC<{
           onClick={handleAddSuite}
           className="px-4 py-2 bg-[#9E7D53] hover:bg-[#8C6D44] text-white text-xs uppercase tracking-wider font-medium rounded-lg flex items-center gap-1.5"
         >
-          <Plus className="w-4 h-4" /> Add Suite
+          <Plus className="w-4 h-4" /> Add Room Category
         </button>
+      </div>
+
+      {/* Capacity Overview Banner */}
+      <div className="p-4 bg-[#FAF8F5] border border-[#9E7D53]/30 rounded-xl flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span className="text-xs font-semibold text-[#1E1B18] block font-serif-luxury">
+            Hotel Room Inventory: 26 Total Rooms
+          </span>
+          <p className="text-[11px] text-[#7D7468]">
+            Official Breakdown: <strong>24 Deluxe Rooms</strong> and <strong>2 Supreme Rooms</strong>.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="px-2.5 py-1 bg-white border border-[#23201C]/10 rounded-md font-mono text-[#1E1B18]">
+            24 Deluxe
+          </span>
+          <span className="px-2.5 py-1 bg-[#9E7D53]/15 text-[#9E7D53] border border-[#9E7D53]/30 rounded-md font-mono font-semibold">
+            2 Supreme
+          </span>
+        </div>
       </div>
 
       {/* Editing Modal / Drawer if active */}
@@ -1043,7 +1129,7 @@ const SuitesManager: React.FC<{
                 />
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <div>
                   <label className="block text-[11px] uppercase text-[#7D7468] mb-1">Category</label>
                   <select
@@ -1051,10 +1137,25 @@ const SuitesManager: React.FC<{
                     onChange={(e: any) => setEditingSuite({ ...editingSuite, category: e.target.value })}
                     className="w-full border rounded-lg p-2 text-xs bg-white"
                   >
-                    <option value="suite">Suite</option>
+                    <option value="suite">Suite / Room</option>
                     <option value="apartment">Apartment</option>
                     <option value="penthouse">Penthouse</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] uppercase text-[#7D7468] mb-1">Room Count</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={editingSuite.roomCount ?? (editingSuite.id.includes('supreme') ? 2 : 24)}
+                    onChange={(e) =>
+                      setEditingSuite({
+                        ...editingSuite,
+                        roomCount: parseInt(e.target.value, 10) || 1
+                      })
+                    }
+                    className="w-full border rounded-lg p-2 text-xs font-semibold"
+                  />
                 </div>
                 <div>
                   <label className="block text-[11px] uppercase text-[#7D7468] mb-1">Size (m²)</label>
@@ -1181,9 +1282,14 @@ const SuitesManager: React.FC<{
                   €{suite.priceFrom} / Nacht
                 </span>
               </div>
-              <span className="text-[10px] uppercase tracking-wider text-[#9E7D53] font-semibold">
-                {suite.category} · {suite.size}
-              </span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] uppercase tracking-wider text-[#9E7D53] font-semibold">
+                  {suite.category} · {suite.size}
+                </span>
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#9E7D53]/15 text-[#9E7D53]">
+                  {suite.roomCount ?? (suite.id.includes('supreme') ? 2 : 24)} Rooms
+                </span>
+              </div>
               <h4 className="font-serif-luxury text-lg text-[#1E1B18] font-light">
                 {suite.name[lang] || suite.name.de}
               </h4>

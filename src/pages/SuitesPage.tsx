@@ -43,11 +43,30 @@ export const SuitesPage: React.FC = () => {
         </h1>
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-[#5B544B] font-light leading-relaxed">
           {language === 'de'
-            ? 'Stilvoll eingerichtete Zimmer und Suiten mit erstklassigem Schlafkomfort, modernen Bädern und entspannter Atmosphäre.'
+            ? 'Insgesamt 26 stilvoll ausgestattete Zimmer: 24 Deluxe Zimmer und 2 exklusive Supreme Zimmer für gehobenen Komfort.'
             : language === 'it'
-            ? 'Camere e suite dal design curato con letti di alta qualità, bagni moderni e un’atmosfera accogliente.'
-            : 'Thoughtfully designed accommodations featuring premium bedding, modern en-suite bathrooms, serene aesthetics, and dedicated service.'}
+            ? '26 alloggi arredati con cura: 24 Camere Deluxe e 2 esclusive Camere Supreme studiate per il massimo comfort.'
+            : 'A boutique collection of 26 thoughtfully appointed accommodations: 24 Deluxe Rooms and 2 exclusive Supreme Rooms crafted for elevated comfort.'}
         </p>
+
+        {/* Room Inventory Banner: 26 Rooms (24 Deluxe, 2 Supreme) */}
+        <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-3 sm:gap-6 bg-[#F5F2EB] border border-[#9E7D53]/30 rounded-xl px-6 py-3 text-xs sm:text-sm text-[#1E1B18] shadow-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#9E7D53]"></span>
+            <span className="font-medium font-sans-clean uppercase tracking-[0.15em] text-[11px]">Total:</span>
+            <span className="font-serif-luxury text-base sm:text-lg font-normal text-[#1E1B18]">26 Rooms</span>
+          </div>
+          <span className="hidden sm:inline text-[#9E7D53]/40">|</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[#7D7468] text-[11px] uppercase tracking-[0.12em]">Deluxe:</span>
+            <span className="font-serif-luxury text-base font-semibold text-[#9E7D53]">24 Rooms</span>
+          </div>
+          <span className="hidden sm:inline text-[#9E7D53]/40">|</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[#7D7468] text-[11px] uppercase tracking-[0.12em]">Supreme:</span>
+            <span className="font-serif-luxury text-base font-semibold text-[#9E7D53]">2 Rooms</span>
+          </div>
+        </div>
 
         <div className="mt-8 flex justify-center">
           <button

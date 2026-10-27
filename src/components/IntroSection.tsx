@@ -29,7 +29,7 @@ export const IntroSection: React.FC = () => {
           <span className="hidden lg:inline text-[#9E7D53]/30">|</span>
           <div className="hidden lg:flex items-center gap-2">
             <span className="text-[#9E7D53]">✦</span>
-            <span>24/7 Dedicated Concierge</span>
+            <span>Attentive Guest Hospitality</span>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ export const IntroSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Overlapping Floating Badge with 16 Suites Stat */}
+              {/* Overlapping Floating Badge with 26 Rooms Stat */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -116,10 +116,12 @@ export const IntroSection: React.FC = () => {
                   <span className="text-[10px] uppercase tracking-[0.2em] font-medium">Boutique</span>
                 </div>
                 <div className="font-serif-luxury text-3xl font-light text-white">
-                  {intro.statSuites}
+                  {siteData.roomOverview ? `${siteData.roomOverview.totalRooms} Rooms` : '26 Rooms'}
                 </div>
                 <p className="text-[11px] text-white/70 font-light mt-1">
-                  {language === 'de' ? 'Für maximale Privatsphäre & persönliche Fürsorge' : language === 'it' ? 'Per la massima riservatezza e quiete' : 'For absolute privacy and curated hospitality'}
+                  {siteData.roomOverview
+                    ? `${siteData.roomOverview.deluxeRoomsCount} Deluxe · ${siteData.roomOverview.supremeRoomsCount} Supreme`
+                    : '24 Deluxe · 2 Supreme Rooms'}
                 </p>
               </motion.div>
             </div>
@@ -130,37 +132,49 @@ export const IntroSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 pt-12 border-t border-[#23201C]/10">
           <div className="space-y-2">
             <span className="text-xs font-serif-luxury text-2xl font-light text-[#9E7D53] block">
-              16 Private Einheiten
+              {siteData.roomOverview ? `${siteData.roomOverview.totalRooms} Rooms & Suites` : '26 Rooms & Suites'}
             </span>
             <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-[#1E1B18]">
-              {language === 'de' ? 'Boutique Maßstab' : language === 'it' ? 'Dimensione Boutique' : 'Boutique Scale'}
+              {language === 'de' ? '24 Deluxe · 2 Supreme' : language === 'it' ? '24 Deluxe · 2 Supreme' : '24 Deluxe · 2 Supreme'}
             </h4>
             <p className="text-xs text-[#7D7468] font-light leading-relaxed">
-              {language === 'de' ? 'Kein anonymer Massenbetrieb, sondern ein geschützter Raum für achtsames Verweilen.' : language === 'it' ? 'Niente turismo di massa, solo uno spazio riservato per rigenerarsi.' : 'Intimate scale designed for serenity, privacy, and mindful unhurried living.'}
+              {language === 'de'
+                ? 'Durchdachte Ästhetik, edle Betten und schallisolierte Rückzugsorte für erholsamen Schlaf.'
+                : language === 'it'
+                ? 'Design moderno, letti di alta qualità e ambienti insonorizzati per un soggiorno rilassante.'
+                : 'Thoughtful boutique proportions, plush bedding, and sound-insulated sanctuaries for restorative rest.'}
             </p>
           </div>
 
           <div className="space-y-2">
             <span className="text-xs font-serif-luxury text-2xl font-light text-[#9E7D53] block">
-              {intro.statVineyard}
+              {siteData.skyLounge?.tagline?.en || 'Rooftop Sky Bar'}
             </span>
             <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-[#1E1B18]">
-              {language === 'de' ? 'Alpin-Mediterranes Klima' : language === 'it' ? 'Clima Alpino-Mediterraneo' : 'Alpine-Mediterranean Sun'}
+              {language === 'de' ? 'Panoramablick & Cocktails' : language === 'it' ? 'Vista Panoramica & Cocktail' : 'Skyline Vistas & Drinks'}
             </h4>
             <p className="text-xs text-[#7D7468] font-light leading-relaxed">
-              {language === 'de' ? 'Milde Lüfte der Südtiroler Weinstraße und schützende Felswände der Dolomiten.' : language === 'it' ? 'Le brezze miti della Strada del Vino e la corona protettiva delle Alpi.' : 'Gentle breezes of the South Tyrolean wine region combined with majestic alpine panoramas.'}
+              {language === 'de'
+                ? 'Spektakuläre Sonnenuntergänge, meisterhafte Mixologie und ein exklusives Open-Air-Ambiente über der Stadt.'
+                : language === 'it'
+                ? 'Tramonti spettacolari, mixology d’autore e un’atmosfera raffinata a cielo aperto.'
+                : 'Spectacular sunset views, curated mixology, and an elevated open-air atmosphere high above the city.'}
             </p>
           </div>
 
           <div className="space-y-2">
             <span className="text-xs font-serif-luxury text-2xl font-light text-[#9E7D53] block">
-              Slow Living
+              {siteData.restaurant?.title?.en || 'Restaurant & Dining'}
             </span>
             <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-[#1E1B18]">
-              {language === 'de' ? 'Das Versprechen an Zeit' : language === 'it' ? 'Il Tempo per Sé' : 'The Luxury of Time'}
+              {language === 'de' ? 'Feine Kulinarik' : language === 'it' ? 'Cucina Raffinata' : 'Fine Culinary Craft'}
             </h4>
             <p className="text-xs text-[#7D7468] font-light leading-relaxed">
-              {language === 'de' ? 'Vom Morgenschwimmen im beheizten Quellwasser-Pool bis zum Glas Lagrein bei Sonnenuntergang.' : language === 'it' ? 'Dal nuoto mattutino in piscina riscaldata al calice di Lagrein al calar del sole.' : 'From sunrise floating in our heated spring pool to twilight wine tastings among old vines.'}
+              {language === 'de'
+                ? 'Frisch zubereitete Spezialitäten, warmherzige Gastfreundschaft und stilvolles Speisen zu jeder Tageszeit.'
+                : language === 'it'
+                ? 'Specialità fresche preparate ogni giorno, calda accoglienza e un’esperienza culinaria indimenticabile.'
+                : 'Fresh regional and international flavors, attentive hospitality, and refined dining from morning to evening.'}
             </p>
           </div>
         </div>

@@ -17,13 +17,24 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-14 border-b border-white/10">
           {/* Col 1: Hotel Identity & Tagline (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
-            <div>
-              <h2 className="font-serif-luxury text-3xl sm:text-4xl tracking-[0.25em] font-light text-white uppercase">
-                {siteData.contact.hotelName}
-              </h2>
-              <span className="text-[10px] tracking-[0.35em] text-[#9E7D53] uppercase block mt-1 font-medium">
-                {siteData.contact.subtitle}
-              </span>
+            <div className="flex items-center gap-3.5">
+              {siteData.contact.logo && siteData.contact.showLogoInFooter !== false && (
+                <img
+                  src={siteData.contact.logo}
+                  alt={siteData.contact.hotelName || 'Logo'}
+                  className="h-12 w-auto object-contain shrink-0"
+                />
+              )}
+              <div>
+                <h2 className="font-serif-luxury text-2xl sm:text-3xl tracking-[0.22em] font-light text-white uppercase">
+                  {siteData.contact.hotelName || 'Aries & Hotel Sky Lounge'}
+                </h2>
+                {siteData.contact.subtitle && !siteData.contact.hotelName?.toLowerCase().includes('sky lounge') && (
+                  <span className="text-[10px] tracking-[0.35em] text-[#9E7D53] uppercase block mt-1 font-medium">
+                    {siteData.contact.subtitle}
+                  </span>
+                )}
+              </div>
             </div>
             <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed max-w-sm">
               {language === 'de'
@@ -69,12 +80,17 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <button onClick={() => setCurrentPage('suites')} className="hover:text-white transition-colors">
-                  {language === 'de' ? 'Zimmer & Suiten' : language === 'it' ? 'Camere & Suite' : 'Rooms & Suites'}
+                  {language === 'de' ? '26 Zimmer & Suiten' : language === 'it' ? '26 Camere & Suite' : '26 Rooms & Suites'}
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setCurrentPage('dining')} className="hover:text-white transition-colors">
+                  {language === 'de' ? 'Restaurant & Dining' : language === 'it' ? 'Ristorante & Dining' : 'Restaurant / Dining'}
                 </button>
               </li>
               <li>
                 <button onClick={() => setCurrentPage('skylounge')} className="hover:text-white transition-colors">
-                  Sky Lounge
+                  Rooftop Sky Bar
                 </button>
               </li>
               <li>

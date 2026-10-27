@@ -80,11 +80,16 @@ export const SuitesPreview: React.FC<SuitesPreviewProps> = ({ limit = 4, showAll
                   </span>
                 </div>
 
-                {/* Category & Size Badges */}
+                {/* Category & Room Count Badges */}
                 <div className="absolute top-4 left-4 flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-xs text-white text-[10px] uppercase tracking-[0.2em] font-medium">
                     {suite.category}
                   </span>
+                  {suite.roomCount && (
+                    <span className="px-2.5 py-1 rounded-full bg-[#9E7D53] text-white text-[10px] uppercase tracking-[0.15em] font-semibold shadow-xs">
+                      {suite.roomCount} {suite.roomCount === 1 ? 'Room' : 'Rooms'}
+                    </span>
+                  )}
                   <span className="px-2.5 py-1 rounded-full bg-white/90 text-[#1E1B18] text-[10px] uppercase tracking-[0.15em] font-semibold">
                     {suite.size}
                   </span>
@@ -178,7 +183,13 @@ export const SuitesPreview: React.FC<SuitesPreviewProps> = ({ limit = 4, showAll
               onClick={() => setCurrentPage('suites')}
               className="inline-flex items-center gap-3 px-8 py-4 rounded-none border border-[#23201C]/30 hover:border-[#23201C] hover:bg-[#23201C] hover:text-white text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300"
             >
-              <span>{language === 'de' ? 'Alle 16 Suiten & Apartments entdecken' : language === 'it' ? 'Scopri tutte le 16 suite & appartamenti' : 'Discover All 16 Suites & Apartments'}</span>
+              <span>
+                {language === 'de'
+                  ? `Alle ${siteData.roomOverview?.totalRooms || 26} Zimmer entdecken (24 Deluxe · 2 Supreme)`
+                  : language === 'it'
+                  ? `Scopri tutte le ${siteData.roomOverview?.totalRooms || 26} camere (24 Deluxe · 2 Supreme)`
+                  : `Explore All ${siteData.roomOverview?.totalRooms || 26} Rooms (24 Deluxe · 2 Supreme)`}
+              </span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

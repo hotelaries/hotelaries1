@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { extractMapEmbedSrc, isValidMapEmbedCode, DEFAULT_MAP_EMBED_CODE, DEFAULT_DIRECTIONS_URL } from '../../utils/mapUtils';
 import { ContactInfo } from '../../types';
+import { LogoManager } from './LogoManager';
 
 interface LocationMapManagerProps {
   contact: ContactInfo;
@@ -36,7 +37,7 @@ export const LocationMapManager: React.FC<LocationMapManagerProps> = ({
   showSaveSuccess
 }) => {
   // Sub-navigation within Contact & Footer
-  const [activeSubTab, setActiveSubTab] = useState<'location' | 'general'>('location');
+  const [activeSubTab, setActiveSubTab] = useState<'location' | 'logo' | 'general'>('location');
 
   // Local form state
   const [formData, setFormData] = useState<ContactInfo>(() => ({
@@ -236,6 +237,23 @@ export const LocationMapManager: React.FC<LocationMapManagerProps> = ({
             ) : (
               <span className="w-2 h-2 rounded-full bg-amber-500" title="Map is OFF" />
             )}
+          </button>
+
+          <button
+            type="button"
+            id="tab-btn-logo-brand"
+            onClick={() => setActiveSubTab('logo')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+              activeSubTab === 'logo'
+                ? 'bg-[#1E1B18] text-white shadow-xs'
+                : 'bg-white text-[#5B544B] hover:text-[#1E1B18] border border-[#23201C]/10'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#9E7D53]" />
+            <span>Logo & Branding</span>
+            {formData.logo ? (
+              <span className="w-2 h-2 rounded-full bg-emerald-500" title="Logo Active" />
+            ) : null}
           </button>
 
           <button
@@ -915,6 +933,20 @@ export const LocationMapManager: React.FC<LocationMapManagerProps> = ({
             </button>
           </div>
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-VIEW 3: LOGO & BRANDING */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'logo' && (
+        <LogoManager
+          contact={formData}
+          onSave={async (updatedContact) => {
+            setFormData(updatedContact);
+            await onSave(updatedContact);
+          }}
+          showSaveSuccess={showSaveSuccess}
+        />
       )}
 
       {/* ========================================================================= */}

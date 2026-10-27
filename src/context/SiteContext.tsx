@@ -75,7 +75,7 @@ interface SiteContextType {
 }
 
 const SITE_CONTENT_DOC = 'main';
-const STORAGE_KEY = 'aries_hotel_data_v2';
+const STORAGE_KEY = 'aries_hotel_data_v3';
 const INQUIRIES_STORAGE_KEY = 'aries_inquiries_v2';
 const AUTH_STORAGE_KEY = 'aries_admin_auth_v2';
 
@@ -109,6 +109,7 @@ const VALID_PAGES = [
   'home',
   'suites',
   'skylounge',
+  'dining',
   'experience',
   'wellness',
   'culinary',
@@ -136,6 +137,15 @@ export const parseValidPage = (pathOrHash: string): ValidPage => {
   if (clean === 'admin' || clean.startsWith('admin/')) {
     return 'admin';
   }
+  if (clean === 'restaurant' || clean === 'culinary' || clean === 'dining') {
+    return 'dining';
+  }
+  if (clean === 'skybar' || clean === 'rooftop' || clean === 'rooftop-sky-bar' || clean === 'rooftop-bar' || clean === 'skylounge') {
+    return 'skylounge';
+  }
+  if (clean === 'rooms' || clean === 'room' || clean === 'suites') {
+    return 'suites';
+  }
   if (VALID_PAGES.includes(clean as ValidPage)) {
     return clean as ValidPage;
   }
@@ -152,12 +162,13 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed && typeof parsed === 'object') {
-          // Verify brand version and address freshness
+          // Verify brand version and freshness
           if (
             !parsed.brandVersion ||
-            parsed.brandVersion < 3 ||
+            parsed.brandVersion < 6 ||
             parsed.contact?.hotelName?.includes('LINGERS') ||
-            parsed.contact?.address?.includes('Sector 115')
+            parsed.contact?.address?.includes('Sector 115') ||
+            (parsed.suites && parsed.suites.length > 2)
           ) {
             return initialSiteData;
           }
@@ -168,9 +179,17 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...initialSiteData.hero,
               ...(parsed.hero || {})
             },
+            roomOverview: {
+              ...initialSiteData.roomOverview,
+              ...(parsed.roomOverview || {})
+            },
             skyLounge: {
               ...initialSiteData.skyLounge,
               ...(parsed.skyLounge || {})
+            },
+            restaurant: {
+              ...initialSiteData.restaurant,
+              ...(parsed.restaurant || {})
             }
           };
         }
@@ -280,6 +299,15 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 4000);
   }, []);
 
+  // Helper to sanitize any payload before Firestore writes (removes undefined values)
+  const sanitizeForFirestore = <T,>(obj: T): T => {
+    try {
+      return JSON.parse(JSON.stringify(obj, (_, v) => (v === undefined ? null : v)));
+    } catch {
+      return obj;
+    }
+  };
+
   // Log activity helper
   const logActivity = useCallback(async (action: string, details: string) => {
     const newLog: ActivityLog = {
@@ -293,10 +321,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       if (db) {
-        await addDoc(collection(db, 'activity_logs'), {
+        await addDoc(collection(db, 'activity_logs'), sanitizeForFirestore({
           ...newLog,
           serverTimestamp: serverTimestamp()
-        });
+        }));
       }
     } catch (e) {
       console.warn('Activity log firestore sync notice:', e);
@@ -321,16 +349,43 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (docSnap.exists()) {
             const remoteData = docSnap.data() as Partial<SiteData>;
             if (remoteData && typeof remoteData === 'object') {
+              const hasFictionalContent =
+                (remoteData.experiences && remoteData.experiences.length > 0) ||
+                (remoteData.wellness && remoteData.wellness.length > 0) ||
+                (remoteData.culinary && remoteData.culinary.some((c: any) => c.id === 'cul-dinner')) ||
+                (remoteData.gallery && remoteData.gallery.some((g: any) => g.title?.en?.toLowerCase().includes('pool') || g.category === 'amenities'));
+
               const isOldBrand =
                 !remoteData.brandVersion ||
-                remoteData.brandVersion < 3 ||
+                remoteData.brandVersion < 5 ||
+                hasFictionalContent ||
                 remoteData.contact?.hotelName?.includes('LINGERS') ||
-                remoteData.contact?.address?.includes('Sector 115');
+                remoteData.contact?.address?.includes('Sector 115') ||
+                (remoteData.suites && remoteData.suites.length > 2);
+
               if (isOldBrand) {
                 const updated: SiteData = {
                   ...initialSiteData,
                   ...remoteData,
-                  brandVersion: 3,
+                  brandVersion: 5,
+                  experiences: [],
+                  wellness: [],
+                  culinary: initialSiteData.culinary,
+                  gallery: initialSiteData.gallery,
+                  pages: {
+                    ...initialSiteData.pages,
+                    ...(remoteData?.pages || {})
+                  },
+                  roomOverview: initialSiteData.roomOverview,
+                  suites: initialSiteData.suites,
+                  skyLounge: {
+                    ...initialSiteData.skyLounge,
+                    ...(remoteData?.skyLounge || {})
+                  },
+                  restaurant: {
+                    ...initialSiteData.restaurant,
+                    ...(remoteData?.restaurant || {})
+                  },
                   contact: {
                     ...initialSiteData.contact,
                     ...(remoteData?.contact || {}),
@@ -342,11 +397,11 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=SBP+City+of+dreams+high+ground+road+zirakpur+140603"
                   },
                   lastUpdated: new Date().toISOString(),
-                  updatedBy: 'address-upgrade'
+                  updatedBy: 'clean-fictional-content-upgrade'
                 };
                 setSiteDataState(updated);
                 safeStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-                setDoc(contentDocRef, updated).catch(e => console.warn('Address upgrade notice:', e));
+                setDoc(contentDocRef, sanitizeForFirestore(updated)).catch(e => console.warn('Brand upgrade notice:', e));
                 return;
               }
 
@@ -355,7 +410,11 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                   ...initialSiteData,
                   ...current,
                   ...remoteData,
-                  brandVersion: 3,
+                  brandVersion: 6,
+                  experiences: [],
+                  wellness: [],
+                  culinary: (remoteData?.culinary || initialSiteData.culinary).filter((c: any) => c.id !== 'cul-dinner'),
+                  gallery: (remoteData?.gallery || initialSiteData.gallery).filter((g: any) => !g.title?.en?.toLowerCase().includes('pool') && g.category !== 'amenities'),
                   contact: {
                     ...initialSiteData.contact,
                     ...(current?.contact || {}),
@@ -366,10 +425,20 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     ...(current?.hero || {}),
                     ...(remoteData?.hero || {})
                   },
+                  roomOverview: {
+                    ...initialSiteData.roomOverview,
+                    ...(current?.roomOverview || {}),
+                    ...(remoteData?.roomOverview || {})
+                  },
                   skyLounge: {
                     ...initialSiteData.skyLounge,
                     ...(current?.skyLounge || {}),
                     ...(remoteData?.skyLounge || {})
+                  },
+                  restaurant: {
+                    ...initialSiteData.restaurant,
+                    ...(current?.restaurant || {}),
+                    ...(remoteData?.restaurant || {})
                   }
                 };
                 safeStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
@@ -378,12 +447,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
           } else {
             // First time seeding default content to Firestore
-            setDoc(contentDocRef, {
+            setDoc(contentDocRef, sanitizeForFirestore({
               ...initialSiteData,
-              brandVersion: 3,
+              brandVersion: 5,
               lastUpdated: new Date().toISOString(),
               updatedBy: 'system-seed'
-            }).catch((err) => console.warn('Seeding firestore notice:', err));
+            })).catch((err) => console.warn('Seeding firestore notice:', err));
           }
         }, (err) => {
           console.warn('Firestore site_content listener warning:', err);
@@ -473,15 +542,15 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (resolvedPayload) {
         // Push to Firestore with merge
         const docRef = doc(db, 'site_content', SITE_CONTENT_DOC);
-        await setDoc(docRef, resolvedPayload, { merge: true });
+        await setDoc(docRef, sanitizeForFirestore(resolvedPayload), { merge: true });
 
         // Synchronize siteSettings/contact for dedicated settings architecture
         if ((resolvedPayload as SiteData).contact) {
           try {
             const contactRef = doc(db, 'siteSettings', 'contact');
             const c = (resolvedPayload as SiteData).contact;
-            await setDoc(contactRef, {
-              hotelName: c.hotelName || 'Hotel Aries & Sky Lounge',
+            await setDoc(contactRef, sanitizeForFirestore({
+              hotelName: c.hotelName || 'Aries & Hotel Sky Lounge',
               address: c.address || '',
               phone1: c.phone || c.phone1 || '72593 32223',
               phone2: c.phone2 || '89683 99764',
@@ -492,7 +561,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
               showMap: c.showMap !== false,
               mapHeight: c.mapHeight || 450,
               updatedAt: new Date().toISOString()
-            }, { merge: true });
+            }), { merge: true });
           } catch (syncErr) {
             console.warn('siteSettings/contact sync warning:', syncErr);
           }
@@ -523,7 +592,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       safeStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 
       const docRef = doc(db, 'site_content', SITE_CONTENT_DOC);
-      await setDoc(docRef, payload);
+      await setDoc(docRef, sanitizeForFirestore(payload));
 
       await logActivity('Reset Content', 'Reset all website content to pristine South Tyrol boutique defaults');
       showToast('Reset to pristine curated luxury content.', 'info');
@@ -717,45 +786,46 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Admin login: Supports both Firebase Auth and master administrative passphrase
-  const loginAdmin = async (emailOrPass: string, pass?: string): Promise<boolean> => {
-    // 1. If password only or master credentials
-    if (!pass) {
-      const p = emailOrPass.trim();
-      if (p === 'admin' || p === 'lingers2025' || p.toLowerCase() === 'lingers') {
-        setIsAdminLoggedIn(true);
-        safeStorage.setItem(AUTH_STORAGE_KEY, 'true');
-        await logActivity('Admin Login', 'Master administrative login authenticated');
-        showToast('Welcome to LINGERS Management Console.', 'success');
-        return true;
-      }
+  // Admin login: Authenticates strictly with username HotelAries and password HotelAries$(123)
+  const loginAdmin = async (emailOrUsername: string, pass?: string): Promise<boolean> => {
+    const inputUser = emailOrUsername.trim();
+    const inputPass = (pass !== undefined ? pass : '').trim();
+
+    // Master administrative credentials:
+    // Username: HotelAries
+    // Password: HotelAries$(123)
+    const isMasterUser =
+      inputUser === 'HotelAries' ||
+      inputUser.toLowerCase() === 'hotelaries' ||
+      inputUser.toLowerCase() === 'hotelaries764@gmail.com';
+    const isMasterPass = inputPass === 'HotelAries$(123)';
+
+    if (isMasterUser && isMasterPass) {
+      setIsAdminLoggedIn(true);
+      safeStorage.setItem(AUTH_STORAGE_KEY, 'true');
+      await logActivity('Admin Login', `Administrator logged in as HotelAries`);
+      showToast('Welcome to Hotel Aries Management Console.', 'success');
+      return true;
     }
 
-    // 2. Try Firebase Authentication with Email & Password
+    // Secondary fallback: Try Firebase Authentication if an email/password was supplied
     try {
-      const email = pass ? emailOrPass : 'admin@lingers.it';
-      const password = pass || emailOrPass;
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      if (cred.user) {
-        setIsAdminLoggedIn(true);
-        safeStorage.setItem(AUTH_STORAGE_KEY, 'true');
-        await logActivity('Admin Login', `Authenticated as ${cred.user.email}`);
-        showToast(`Welcome, ${cred.user.email}`, 'success');
-        return true;
+      if (pass) {
+        const email = inputUser.includes('@') ? inputUser : 'hotelaries764@gmail.com';
+        const cred = await signInWithEmailAndPassword(auth, email, inputPass);
+        if (cred.user) {
+          setIsAdminLoggedIn(true);
+          safeStorage.setItem(AUTH_STORAGE_KEY, 'true');
+          await logActivity('Admin Login', `Authenticated as ${cred.user.email}`);
+          showToast(`Welcome, ${cred.user.email}`, 'success');
+          return true;
+        }
       }
     } catch (authErr: any) {
-      // If user input matches master credentials fallback, authenticate gracefully
-      const p = (pass || emailOrPass).trim();
-      if (p === 'admin' || p === 'lingers2025' || p.toLowerCase() === 'lingers') {
-        setIsAdminLoggedIn(true);
-        safeStorage.setItem(AUTH_STORAGE_KEY, 'true');
-        await logActivity('Admin Login', 'Administrator signed in');
-        showToast('Welcome to LINGERS Management Console.', 'success');
-        return true;
-      }
-      showToast(authErr.message || 'Invalid credentials. (Hint: lingers2025 or admin)', 'error');
-      return false;
+      // Failed Firebase authentication
     }
+
+    showToast('Invalid credentials. Please verify your username and password.', 'error');
     return false;
   };
 

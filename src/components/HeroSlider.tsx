@@ -7,7 +7,15 @@ export const HeroSlider: React.FC = () => {
   const { siteData, language, t, openBookingModal } = useSite();
   const slides = siteData.hero.slides && siteData.hero.slides.length > 0 ? siteData.hero.slides : [];
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<number>(1); // 1 = next, -1 = prev
+  const [isFormFocused, setIsFormFocused] = useState(false);
+
+  // Drag and touch gesture state
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const touchStartRef = useRef<{ x: number; y: number; time: number; lockedDirection?: 'x' | 'y' } | null>(null);
+  const isPointerDownRef = useRef(false);
+  const pointerStartXRef = useRef(0);
 
   // Booking box dates default to a future date
   const getFormattedDate = (daysFromNow: number) => {
@@ -20,22 +28,36 @@ export const HeroSlider: React.FC = () => {
   const [departureDate, setDepartureDate] = useState(() => getFormattedDate(12));
   const [guestCount, setGuestCount] = useState('2');
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Slide navigation
   const nextSlide = useCallback(() => {
     if (slides.length <= 1) return;
+    setSlideDirection(1);
     setCurrentIndex((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     if (slides.length <= 1) return;
+    setSlideDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [slides.length]);
+
+  const goToSlide = (idx: number) => {
+    if (idx === currentIndex) return;
+    setSlideDirection(idx > currentIndex ? 1 : -1);
+    setCurrentIndex(idx);
   };
 
+  // Auto-slide: Runs automatically every interval, only paused when user is dragging or focusing booking inputs
   useEffect(() => {
-    if (!siteData.hero.autoSlide || isPaused || slides.length <= 1) return;
+    const isAutoSlideActive = siteData.hero.autoSlide !== false;
+    if (!isAutoSlideActive || isDragging || isFormFocused || slides.length <= 1) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
 
-    const intervalSeconds = (siteData.hero.slideIntervalSeconds || 6) * 1000;
+    const intervalSeconds = Math.max(3, siteData.hero.slideIntervalSeconds || 5) * 1000;
     timerRef.current = setInterval(() => {
       nextSlide();
     }, intervalSeconds);
@@ -43,12 +65,100 @@ export const HeroSlider: React.FC = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [siteData.hero.autoSlide, siteData.hero.slideIntervalSeconds, isPaused, slides.length, nextSlide]);
+  }, [siteData.hero.autoSlide, siteData.hero.slideIntervalSeconds, isDragging, isFormFocused, slides.length, currentIndex, nextSlide]);
+
+  // Touch event handlers (for finger swipe / drag on mobile and touch devices)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('input, select, button, a, #hero-booking-bar')) {
+      return;
+    }
+
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now()
+    };
+    setIsDragging(true);
+    setDragOffset(0);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+    const touch = e.touches[0];
+    const diffX = touch.clientX - touchStartRef.current.x;
+    const diffY = touch.clientY - touchStartRef.current.y;
+
+    // Detect direction lock on initial swipe so vertical page scroll is preserved
+    if (!touchStartRef.current.lockedDirection) {
+      if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
+        touchStartRef.current.lockedDirection = Math.abs(diffX) >= Math.abs(diffY) ? 'x' : 'y';
+      }
+    }
+
+    if (touchStartRef.current.lockedDirection === 'y') {
+      return;
+    }
+
+    setDragOffset(diffX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartRef.current) return;
+    const swipeDistance = dragOffset;
+    const swipeTime = Date.now() - touchStartRef.current.time;
+    const isFastFlick = swipeTime < 320 && Math.abs(swipeDistance) > 30;
+
+    if (swipeDistance < -45 || (isFastFlick && swipeDistance < 0)) {
+      nextSlide();
+    } else if (swipeDistance > 45 || (isFastFlick && swipeDistance > 0)) {
+      prevSlide();
+    }
+
+    touchStartRef.current = null;
+    setIsDragging(false);
+    setDragOffset(0);
+  };
+
+  // Pointer event handlers (for mouse drag on desktop)
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('input, select, button, a, #hero-booking-bar, #hero-prev-btn, #hero-next-btn')) {
+      return;
+    }
+
+    isPointerDownRef.current = true;
+    pointerStartXRef.current = e.clientX;
+    setIsDragging(true);
+    setDragOffset(0);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isPointerDownRef.current) return;
+    const diffX = e.clientX - pointerStartXRef.current;
+    setDragOffset(diffX);
+  };
+
+  const handlePointerUp = () => {
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
+
+    if (dragOffset < -45) {
+      nextSlide();
+    } else if (dragOffset > 45) {
+      prevSlide();
+    }
+
+    setIsDragging(false);
+    setDragOffset(0);
+  };
 
   const currentSlide = slides[currentIndex] || {
     id: 'fallback',
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=85',
-    title: { de: 'HOTEL ARIES', en: 'HOTEL ARIES', it: 'HOTEL ARIES' },
+    title: { de: 'ARIES & HOTEL SKY LOUNGE', en: 'ARIES & HOTEL SKY LOUNGE', it: 'ARIES & HOTEL SKY LOUNGE' },
     subtitle: { de: 'SKY LOUNGE · Stilvolle Zimmer & Rooftop Panoramablick', en: 'SKY LOUNGE · Premium Rooms & Rooftop Panorama', it: 'SKY LOUNGE · Camere Raffinate & Terrazza Panoramica' }
   };
 
@@ -72,33 +182,65 @@ export const HeroSlider: React.FC = () => {
     });
   };
 
+  // Slide motion animation
+  const slideVariants = {
+    enter: (dir: number) => ({
+      opacity: 0,
+      scale: 1.05,
+      x: dir > 0 ? 50 : -50
+    }),
+    center: {
+      opacity: 1,
+      scale: 1,
+      x: 0,
+      transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] }
+    },
+    exit: (dir: number) => ({
+      opacity: 0,
+      scale: 0.98,
+      x: dir > 0 ? -50 : 50,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+    })
+  };
+
   return (
     <section
       id="hero-section"
-      className="relative w-full h-screen min-h-[700px] flex flex-col justify-between overflow-hidden select-none"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      className="relative w-full h-screen min-h-[700px] flex flex-col justify-between overflow-hidden select-none touch-pan-y cursor-grab active:cursor-grabbing"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
-      {/* Background Slides with smooth Crossfade Transition */}
-      <div className="absolute inset-0 z-0">
-        <AnimatePresence mode="sync">
+      {/* Background Slides with Live Drag Transform & Fluid Transitions */}
+      <div
+        className="absolute inset-0 z-0 will-change-transform"
+        style={{
+          transform: isDragging ? `translateX(${dragOffset * 0.65}px)` : 'translateX(0px)',
+          transition: isDragging ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
+        }}
+      >
+        <AnimatePresence custom={slideDirection} mode="sync">
           <motion.div
             key={currentSlide.id + currentIndex}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
+            custom={slideDirection}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url("${currentSlide.image}")` }}
           />
         </AnimatePresence>
 
-        {/* Soft Multi-layer Overlays for pristine luxury readability */}
-        {siteData.hero.showOverlay && (
+        {/* Soft Multi-layer Overlays for pristine readability */}
+        {siteData.hero.showOverlay !== false && (
           <>
-            {/* Top gradient for header contrast */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/70 pointer-events-none" />
-            {/* Subtle radial vignette */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-black/75 pointer-events-none" />
             <div className="absolute inset-0 bg-radial-[at_center] from-transparent via-black/15 to-black/45 pointer-events-none" />
           </>
         )}
@@ -109,17 +251,23 @@ export const HeroSlider: React.FC = () => {
         <>
           <button
             id="hero-prev-btn"
-            onClick={prevSlide}
+            onClick={(e) => {
+              e.stopPropagation();
+              prevSlide();
+            }}
             aria-label="Previous Slide"
-            className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 items-center justify-center rounded-full border border-white/20 bg-black/20 backdrop-blur-xs text-white/80 hover:text-white hover:border-white/60 hover:bg-black/40 transition-all duration-300"
+            className="hidden sm:flex absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 items-center justify-center rounded-full border border-white/20 bg-black/25 backdrop-blur-xs text-white/85 hover:text-white hover:border-white/70 hover:bg-black/50 transition-all duration-300 shadow-lg cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             id="hero-next-btn"
-            onClick={nextSlide}
+            onClick={(e) => {
+              e.stopPropagation();
+              nextSlide();
+            }}
             aria-label="Next Slide"
-            className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 items-center justify-center rounded-full border border-white/20 bg-black/20 backdrop-blur-xs text-white/80 hover:text-white hover:border-white/60 hover:bg-black/40 transition-all duration-300"
+            className="hidden sm:flex absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 items-center justify-center rounded-full border border-white/20 bg-black/25 backdrop-blur-xs text-white/85 hover:text-white hover:border-white/70 hover:bg-black/50 transition-all duration-300 shadow-lg cursor-pointer"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -130,34 +278,36 @@ export const HeroSlider: React.FC = () => {
       <div className="pt-28 md:pt-32" />
 
       {/* Center Hero Content: Headline & Subtitle */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center my-auto">
+      <div
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center my-auto transition-transform duration-300"
+        style={{
+          transform: isDragging ? `translateX(${dragOffset * 0.25}px)` : 'translateX(0px)',
+          transition: isDragging ? 'none' : 'transform 0.4s ease-out'
+        }}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide.id + '-text'}
-            initial={{ opacity: 0, y: 25 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-4 sm:space-y-5"
           >
-            {/* Editorial Location tag or caption in luxury pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/25 bg-black/30 backdrop-blur-sm shadow-sm">
+            {/* Location / Brand tag in luxury pill */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/25 bg-black/35 backdrop-blur-sm shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-[#9E7D53] animate-pulse" />
-              <p className="text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-[#FAF8F5]/90 font-sans-clean font-medium">
+              <p className="text-[10px] sm:text-[11px] tracking-[0.28em] uppercase text-[#FAF8F5]/90 font-sans-clean font-medium">
                 {currentSlide.caption
                   ? t(currentSlide.caption)
-                  : language === 'de'
-                  ? 'Hotel Aries & Sky Lounge'
-                  : language === 'it'
-                  ? 'Hotel Aries & Sky Lounge'
-                  : 'Hotel Aries & Sky Lounge'}
+                  : 'Aries & Hotel Sky Lounge'}
               </p>
             </div>
 
-            {/* Main Tagline: "YOUR PLACE TO LINGER" */}
+            {/* Main Headline */}
             <h2
               id="hero-main-title"
-              className="font-serif-luxury text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white tracking-[0.22em] uppercase leading-tight sm:leading-tight drop-shadow-lg"
+              className="font-serif-luxury text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white tracking-[0.2em] uppercase leading-tight sm:leading-tight drop-shadow-lg"
             >
               {t(currentSlide.title) || t(siteData.hero.mainTagline)}
             </h2>
@@ -172,32 +322,50 @@ export const HeroSlider: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Slide Counter / Dots Indicator */}
+        {/* Slide Counter / Dots Indicator with Slide Drag hint */}
         {slides.length > 1 && (
-          <div className="flex items-center justify-center gap-3 mt-6 sm:mt-8">
-            {slides.map((slide, idx) => (
-              <button
-                key={slide.id}
-                id={`hero-indicator-${idx}`}
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`group relative py-2 transition-all duration-300 flex items-center`}
-              >
-                <div
-                  className={`h-0.5 transition-all duration-500 rounded-full ${
-                    currentIndex === idx
-                      ? 'w-10 bg-white shadow-sm'
-                      : 'w-4 bg-white/40 group-hover:bg-white/70'
-                  }`}
-                />
-              </button>
-            ))}
+          <div className="flex flex-col items-center gap-2 mt-6 sm:mt-8">
+            <div className="flex items-center justify-center gap-2.5">
+              {slides.map((slide, idx) => (
+                <button
+                  key={slide.id}
+                  id={`hero-indicator-${idx}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToSlide(idx);
+                  }}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className="group relative py-2 px-1 transition-all duration-300 flex items-center cursor-pointer"
+                >
+                  <div
+                    className={`h-1 transition-all duration-500 rounded-full ${
+                      currentIndex === idx
+                        ? 'w-10 bg-white shadow-md'
+                        : 'w-3.5 bg-white/40 group-hover:bg-white/75 group-hover:w-6'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Subtle swipe / drag indicator text */}
+            <div className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.25em] text-white/60 font-sans-clean">
+              <span>{`0${currentIndex + 1} / 0${slides.length}`}</span>
+              <span className="w-1 h-1 rounded-full bg-white/40" />
+              <span>Swipe or drag to explore</span>
+            </div>
           </div>
         )}
       </div>
 
       {/* Bottom Booking / Search Box */}
-      <div className="relative z-20 w-full pb-6 sm:pb-8 md:pb-10 px-4 sm:px-6">
+      <div
+        id="hero-booking-container"
+        className="relative z-20 w-full pb-6 sm:pb-8 md:pb-10 px-4 sm:px-6 pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+      >
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -218,6 +386,8 @@ export const HeroSlider: React.FC = () => {
                     id="booking-arrival-input"
                     type="date"
                     value={arrivalDate}
+                    onFocus={() => setIsFormFocused(true)}
+                    onBlur={() => setIsFormFocused(false)}
                     onChange={(e) => setArrivalDate(e.target.value)}
                     className="w-full bg-transparent text-xs sm:text-sm font-sans-clean font-medium text-[#1E1B18] focus:outline-none cursor-pointer"
                   />
@@ -236,6 +406,8 @@ export const HeroSlider: React.FC = () => {
                     type="date"
                     value={departureDate}
                     min={arrivalDate}
+                    onFocus={() => setIsFormFocused(true)}
+                    onBlur={() => setIsFormFocused(false)}
                     onChange={(e) => setDepartureDate(e.target.value)}
                     className="w-full bg-transparent text-xs sm:text-sm font-sans-clean font-medium text-[#1E1B18] focus:outline-none cursor-pointer"
                   />
@@ -252,6 +424,8 @@ export const HeroSlider: React.FC = () => {
                   <select
                     id="booking-guests-select"
                     value={guestCount}
+                    onFocus={() => setIsFormFocused(true)}
+                    onBlur={() => setIsFormFocused(false)}
                     onChange={(e) => setGuestCount(e.target.value)}
                     className="w-full bg-transparent text-xs sm:text-sm font-sans-clean font-medium text-[#1E1B18] focus:outline-none cursor-pointer"
                   >
@@ -270,7 +444,7 @@ export const HeroSlider: React.FC = () => {
                   type="button"
                   id="hero-anfrage-btn"
                   onClick={handleInquiry}
-                  className="flex-1 py-3 px-3 sm:px-4 rounded-lg border border-[#23201C]/20 hover:border-[#23201C] text-[#23201C] hover:bg-[#23201C]/5 transition-all duration-200 text-center text-xs uppercase tracking-[0.18em] font-medium font-sans-clean"
+                  className="flex-1 py-3 px-3 sm:px-4 rounded-lg border border-[#23201C]/20 hover:border-[#23201C] text-[#23201C] hover:bg-[#23201C]/5 transition-all duration-200 text-center text-xs uppercase tracking-[0.18em] font-medium font-sans-clean cursor-pointer"
                 >
                   {t(siteData.hero.buttonInquiryText) || (language === 'de' ? 'Anfrage' : language === 'it' ? 'Richiesta' : 'Inquire')}
                 </button>
@@ -280,7 +454,7 @@ export const HeroSlider: React.FC = () => {
                   type="button"
                   id="hero-buchen-btn"
                   onClick={handleDirectBook}
-                  className="flex-1 py-3 px-3 sm:px-4 rounded-lg bg-[#9E7D53] hover:bg-[#8C6D44] text-[#FAF8F5] transition-all duration-200 text-center text-xs uppercase tracking-[0.18em] font-medium font-sans-clean flex items-center justify-center gap-1.5 shadow-sm"
+                  className="flex-1 py-3 px-3 sm:px-4 rounded-lg bg-[#9E7D53] hover:bg-[#8C6D44] text-[#FAF8F5] transition-all duration-200 text-center text-xs uppercase tracking-[0.18em] font-medium font-sans-clean flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                 >
                   <span>{t(siteData.hero.buttonBookText) || (language === 'de' ? 'Buchen' : language === 'it' ? 'Prenota' : 'Book Now')}</span>
                   <ArrowRight className="w-3.5 h-3.5 hidden sm:inline-block" />

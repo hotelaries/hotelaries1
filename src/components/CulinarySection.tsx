@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSite } from '../context/SiteContext';
 import { motion } from 'motion/react';
-import { Clock, Utensils, Coffee, Wine } from 'lucide-react';
+import { Clock, Utensils, Coffee, Wine, ArrowRight } from 'lucide-react';
 
 export const CulinarySection: React.FC = () => {
-  const { siteData, language, t } = useSite();
+  const { siteData, language, t, setCurrentPage } = useSite();
   const { culinaryIntro } = siteData.pages;
 
   return (
@@ -39,7 +39,7 @@ export const CulinarySection: React.FC = () => {
             >
               <img
                 src={siteData.culinary[0]?.image || "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=85"}
-                alt="Boutique Breakfast at LINGERS"
+                alt="Dining & Breakfast at Hotel Aries"
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-103"
                 loading="lazy"
               />
@@ -95,6 +95,24 @@ export const CulinarySection: React.FC = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+
+        {/* View Full Restaurant & Dining Experience CTA */}
+        <div className="mt-14 text-center">
+          <button
+            id="culinary-view-restaurant-btn"
+            onClick={() => setCurrentPage('dining')}
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-none border border-[#23201C]/30 hover:border-[#23201C] hover:bg-[#23201C] hover:text-white text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300"
+          >
+            <span>
+              {language === 'de'
+                ? 'Restaurant & Speisekarte entdecken'
+                : language === 'it'
+                ? 'Scopri il Ristorante & Menu'
+                : 'Explore Restaurant & Dining'}
+            </span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </section>
